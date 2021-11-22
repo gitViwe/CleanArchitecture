@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<APIDbContext>(options =>
 {
     // using an SQLite provider
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLite"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLite"), b => b.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
 });
 
 // register JWTConfig configuration section in dependency injection
