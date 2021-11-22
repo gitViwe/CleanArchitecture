@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(APIDbContext))]
-    [Migration("20211122132705_Athentication")]
-    partial class Athentication
+    [Migration("20211122133819_AUthentication")]
+    partial class AUthentication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

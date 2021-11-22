@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebAPI.Migrations
 {
-    public partial class Athentication : Migration
+    public partial class AUthentication : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

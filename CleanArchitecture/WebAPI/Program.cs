@@ -9,10 +9,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using Utility.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// add 'Utility.Cryptography' custom services
+builder.Services.AddEncryptionServices();
 
 // include database context for application
 builder.Services.AddDbContext<APIDbContext>(options =>
