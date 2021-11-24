@@ -14,13 +14,14 @@ using Utility.Cryptography;
 namespace WebAPI.Controllers
 {
     /// <summary>
-    /// This API controller allows the client to Authenticate a user
+    /// This API controller facilitates user authorization
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
         private readonly IConversion _conversion;
@@ -31,12 +32,14 @@ namespace WebAPI.Controllers
         /// </summary>
         public AuthenticationController(
             UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             IOptionsMonitor<JwtConfig> optionsMonitor,
             TokenValidationParameters validationParameters,
             APIDbContext dbContext,
             IConversion conversion)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _validationParameters = validationParameters;
             _dbContext = dbContext;
             _conversion = conversion;
@@ -45,11 +48,11 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Resgisters a new user on the system
+        /// Registers a new user on the system
         /// </summary>
         /// <param name="registrationRequest">The required user information to register the user</param>
-        /// <response code="200">Returns a Data Transfer Object with the token and refresh token to use on request auth headers</response>
-        /// <response code="400">Returns a Data Transfer Object with collection of errors</response>
+        /// <response code="200">Returns a <see cref="AuthenticationResult"/> with the token and refresh token</response>
+        /// <response code="400">Returns a <see cref="RegistrationResponse"/> with collection of errors</response>
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationRequest)
@@ -101,8 +104,8 @@ namespace WebAPI.Controllers
         /// Login an existing user
         /// </summary>
         /// <param name="loginRequest">The required user information to login the user</param>
-        /// <response code="200">Returns a Data Transfer Object with the token and refresh token to use on request auth headers</response>
-        /// <response code="400">Returns a Data Transfer Object with collection of errors</response>
+        /// <response code="200">Returns a <see cref="AuthenticationResult"/> with the token and refresh token</response>
+        /// <response code="400">Returns a <see cref="RegistrationResponse"/> with collection of errors</response>
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
@@ -135,9 +138,9 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Request a new token if the current token has expired
         /// </summary>
-        /// <param name="tokenRequest">The required user information to verify the user</param>
-        /// <response code="200">Returns a Data Transfer Object with the token and refresh token to use on request auth headers</response>
-        /// <response code="400">Returns a Data Transfer Object with collection of errors</response>
+        /// <param name="tokenRequest">The required user information to verify the user and issue a new token</param>
+        /// <response code="200">Returns a <see cref="AuthenticationResult"/> with the token and refresh token</response>
+        /// <response code="400">Returns a <see cref="RegistrationResponse"/> with collection of errors</response>
         [HttpPost]
         [Route("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
@@ -166,15 +169,11 @@ namespace WebAPI.Controllers
             // encode security key
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
 
+            var claims = await GetAllValidClaims(user);
+
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("Id", user.Id),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -306,6 +305,48 @@ namespace WebAPI.Controllers
                     Errors = new string[] { "We encountered an error, please try again." }
                 };
             }
+        }
+
+        private async Task<List<Claim>> GetAllValidClaims(IdentityUser user)
+        {
+            // add required claims
+            var claims = new List<Claim>()
+            {
+                new Claim("Id", user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            // get claims that are assigned to the user...
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            // ...and ad them to the claims collection
+            claims.AddRange(userClaims);
+
+            // get roles that are assigned to the user
+            foreach (var roleName in await _userManager.GetRolesAsync(user))
+            {
+                // get the identity role using the role name
+                var role = await _roleManager.FindByNameAsync(roleName);
+
+                if (role is null)
+                {
+                    // skip this iteration
+                    continue;
+                }
+
+                // add the role to the claims collection
+                claims.Add(new Claim(ClaimTypes.Role, roleName));
+
+                // get all claims associated with that claim
+                foreach (var roleClaim in await _roleManager.GetClaimsAsync(role))
+                {
+                    claims.Add(roleClaim);
+                }
+            }
+
+            return claims;
         }
     }
 }
