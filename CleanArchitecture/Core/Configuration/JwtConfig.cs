@@ -1,7 +1,7 @@
 ﻿namespace Core
 {
     /// <summary>
-    /// Maps the 'JwtConfig' section in appsettings to this model
+    /// Maps the 'JwtConfig' section in AppSettings to this model
     /// </summary>
     public class JwtConfig
     {

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(APIDbContext))]
-    [Migration("20211122133819_AUthentication")]
-    partial class AUthentication
+    [Migration("20211125174042_Authentication")]
+    partial class Authentication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,6 +106,10 @@ namespace WebAPI.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
@@ -144,7 +148,9 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("IdentityUser");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -152,6 +158,9 @@ namespace WebAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("AppIdentityUserId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("TEXT");
@@ -164,12 +173,17 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppIdentityUserId");
+
                     b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppIdentityUserId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
@@ -183,6 +197,8 @@ namespace WebAPI.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("AppIdentityUserId");
+
                     b.ToTable("UserLogins");
                 });
 
@@ -194,7 +210,12 @@ namespace WebAPI.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("AppIdentityUserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("AppIdentityUserId");
 
                     b.ToTable("UserRoles");
                 });
@@ -218,6 +239,28 @@ namespace WebAPI.Migrations
                     b.ToTable("UserTokens");
                 });
 
+            modelBuilder.Entity("Infrastructure.AppIdentityUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue("AppIdentityUser");
+                });
+
             modelBuilder.Entity("Infrastructure.RefreshToken", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
@@ -227,6 +270,36 @@ namespace WebAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Infrastructure.AppIdentityUser", null)
+                        .WithMany("Claims")
+                        .HasForeignKey("AppIdentityUserId");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Infrastructure.AppIdentityUser", null)
+                        .WithMany("Logins")
+                        .HasForeignKey("AppIdentityUserId");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Infrastructure.AppIdentityUser", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("AppIdentityUserId");
+                });
+
+            modelBuilder.Entity("Infrastructure.AppIdentityUser", b =>
+                {
+                    b.Navigation("Claims");
+
+                    b.Navigation("Logins");
+
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }
