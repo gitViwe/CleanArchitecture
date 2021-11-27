@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // configures authentication to use identity cookies
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<AppIdentityUser, IdentityRole>(options =>
 {
     // require account to sign in
     options.SignIn.RequireConfirmedAccount = true;
@@ -125,10 +125,10 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlCommentsFilePath, true);
 });
 
-// add CORS policy
+// add CORS policy https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-6.0
 builder.Services.AddCors(opions =>
 {
-    // TODO: open policy for testing only
+    // open policy for testing only
     opions.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
@@ -150,8 +150,11 @@ app.UseHttpsRedirection();
 // use routing
 app.UseRouting();
 
-// use the CORS policy as defined above
-app.UseCors("Open");
+if (app.Environment.IsDevelopment())
+{
+    // use the CORS policy as defined above
+    app.UseCors("Open"); 
+}
 
 // add authentication middle-ware
 app.UseAuthentication();

@@ -6,7 +6,7 @@ namespace Infrastructure
     /// <summary>
     /// The entity Framework Core context class inherits from <see cref="IdentityDbContext"/>
     /// </summary>
-    public class APIDbContext : IdentityDbContext
+    public class APIDbContext : IdentityDbContext<AppIdentityUser>
     {
         /// <summary>
         /// Instantiate context using user specified provider
