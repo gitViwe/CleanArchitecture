@@ -112,10 +112,16 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [] Feature 1
-- [] Feature 2
-- [] Feature 3
-    - [] Nested Feature
+- NetCoreAPI:
+    - [x] .NET 5 Web API
+    - [x] SwaggerUI
+    - [x] JWT authentication
+    - [ ] Hangfire
+  - Blazor Web Assembly:
+    - [ ] Progressive Web Aapplication
+  - Data:
+    - [ ] Repository pattern
+    - [ ] Unit of Work
 
 See the [open issues](https://github.com/gitViwe/CleanArchitecture/issues) for a full list of proposed features (and known issues).
 
