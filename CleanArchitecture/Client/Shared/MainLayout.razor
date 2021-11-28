@@ -1,0 +1,78 @@
+﻿@inherits LayoutComponentBase
+
+<!-- Use custom theme -->
+<MudThemeProvider Theme="_themeManager.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="_themeManager.DrawerElevation">
+        <!-- BRAND BREAKPOINTS START -->
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Typo="Typo.h6" Class="ml-4">Blazor PWA</MudText>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudText Typo="Typo.subtitle2">Blazor PWA</MudText>
+        </MudHidden>
+        <MudSpacer />
+        <!-- BRAND BREAKPOINTS END -->
+        <!-- NAVBAR LINKS START -->
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/gitViwe" Target="_blank" />
+        <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+            <ActivatorContent>
+                <MudAvatar Image="" />
+            </ActivatorContent>
+            <ChildContent>
+                <_Avatar Class="mt-n2" UserName="Viwe Nkepu" UserRole="Software Developer" />
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="#" Disabled="true" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="#" Disabled="true" />
+            </ChildContent>
+        </MudMenu>
+        <!-- NAVBAR LINKS END -->
+    </MudAppBar>
+    <!-- SIDEBAR START -->
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="_themeManager.DrawerElevation" ClipMode="_themeManager.DrawerClipMode" Height="100%">
+        <NavMenu />
+    </MudDrawer>
+    <!-- SIDEBAR END -->
+    <MudMainContent>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudToolBar DisableGutters="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
+            </MudToolBar>
+        </MudHidden>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+
+    // set custom theme defaults
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme
+    {
+        Theme = new DefaultTheme(),
+        DrawerClipMode = DrawerClipMode.Always,
+        FontFamily = "Montserrat",
+        DefaultBorderRadius = 6,
+        AppBarElevation = 1,
+        DrawerElevation = 1
+    };
+
+    // specifies the state of the side bar
+    bool _drawerOpen = true;
+
+    // toggles the state of the side bar
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

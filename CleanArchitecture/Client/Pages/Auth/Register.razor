@@ -1,0 +1,42 @@
+﻿@layout AuthLayout
+@page "/auth/register"
+
+<MudForm>
+    <MudText Typo="Typo.h4" GutterBottom="true">Sign Up</MudText>
+
+    <MudText>Already have an account? <MudLink Href="/auth/login">Login</MudLink></MudText>
+
+    <MudTextField T="string" Label="Username" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+
+    <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+
+    <MudTextField @bind-Value="@Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-6"/>
+
+    <MudTextField T="string" Label="Confirm Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-6"/>
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="/" Size="Size.Large" FullWidth="true">Sign Up</MudButton>
+</MudForm>
+
+@code {
+    string Password { get; set; }
+
+    bool PasswordVisibility;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void TogglePasswordVisibility()
+    {
+        @if (PasswordVisibility)
+        {
+            PasswordVisibility = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            PasswordVisibility = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+}

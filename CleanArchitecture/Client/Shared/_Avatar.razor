@@ -1,0 +1,19 @@
+﻿<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Image="@Avatar" />
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body2">@UserName</MudText>
+            <MudText Typo="Typo.caption">@UserRole</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+</MudCard>
+
+@code {
+    [Parameter] public string Class { get; set; }
+    [Parameter] public string Style { get; set; }
+    [Parameter] public string Avatar { get; set; }
+    [Parameter] public string UserName { get; set; }
+    [Parameter] public string UserRole { get; set; }
+}
