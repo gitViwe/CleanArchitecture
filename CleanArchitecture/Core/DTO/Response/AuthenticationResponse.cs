@@ -1,9 +1,9 @@
 ﻿namespace Core.DTO
 {
     /// <summary>
-    /// Authentication result model
+    /// Data Transfer Object for authentication responses
     /// </summary>
-    public class AuthenticationResult
+    public class AuthenticationResponse
     {
         public string Token { get; set; }
         public bool Success { get; set; }
