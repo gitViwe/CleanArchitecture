@@ -14,14 +14,14 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ClaimsController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppIdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         /// <summary>
         /// Facilitates dependency injection using constructor injection
         /// </summary>
         public ClaimsController(
-            UserManager<IdentityUser> userManager,
+            UserManager<AppIdentityUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
