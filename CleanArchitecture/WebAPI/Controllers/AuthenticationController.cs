@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppIdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         /// Facilitates dependency injection using constructor injection
         /// </summary>
         public AuthenticationController(
-            UserManager<IdentityUser> userManager,
+            UserManager<AppIdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptionsMonitor<JwtConfig> optionsMonitor,
             TokenValidationParameters validationParameters,
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
                 }
 
                 // create identity user object
-                var newUser = new IdentityUser { Email = registrationRequest.Email, UserName = registrationRequest.UserName };
+                var newUser = new AppIdentityUser { Email = registrationRequest.Email, UserName = registrationRequest.UserName };
                 // register new user using request details
                 var result = await _userManager.CreateAsync(newUser, registrationRequest.Password);
 
@@ -171,7 +171,7 @@ namespace WebAPI.Controllers
             });
         }
 
-        private async Task<AuthenticationResponse> GenerateJWTToken(IdentityUser user)
+        private async Task<AuthenticationResponse> GenerateJWTToken(AppIdentityUser user)
         {
             // create token handler object
             var handler = new JwtSecurityTokenHandler();
@@ -316,7 +316,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        private async Task<List<Claim>> GetAllValidClaims(IdentityUser user)
+        private async Task<List<Claim>> GetAllValidClaims(AppIdentityUser user)
         {
             // add required claims
             var claims = new List<Claim>()

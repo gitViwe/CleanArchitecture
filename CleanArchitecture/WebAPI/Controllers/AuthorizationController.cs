@@ -4,24 +4,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mime;
 
 namespace WebAPI.Controllers
 {
     /// <summary>
-    /// This API controller facilitates User - Role management
+    /// Use this API controller to manage roles and assign users to roles
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     public class AuthorizationController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppIdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         /// <summary>
         /// Facilitate dependency injection using constructor injection
         /// </summary>
         public AuthorizationController(
-            UserManager<IdentityUser> userManager,
+            UserManager<AppIdentityUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
@@ -29,11 +32,12 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all roles currently stored on the system
+        /// Use this endpoint to get all roles currently stored on the system
         /// </summary>
-        /// <response code="200">Returns a collection of <see cref="IdentityRole"/> objects</response>
+        /// <response code="200">Returns a collection of all roles</response>
         [HttpGet]
         [Route("GetRoles")]
+        [ProducesResponseType(typeof(List<IdentityRole>), 200)]
         public async Task<IActionResult> GetRoles()
         {
             var roles = await _roleManager.Roles.ToListAsync();
@@ -41,13 +45,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Creates a new role on the system
+        /// Use this endpoint to create a new role on the system
         /// </summary>
-        /// <param name="roleName">The name of the Identity Role to create</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with a success message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with an error message</response>
+        /// <param name="roleName">This is the name of the Identity Role to create</param>
+        /// <response code="200">Returns a success message</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("CreateRole")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> CreateRole(string roleName)
         {
             // check if the role already exists
@@ -82,11 +88,12 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all users currently stored on the system
+        /// Use this endpoint to get all users currently stored on the system
         /// </summary>
-        /// <response code="200">Returns a collection of <see cref="IdentityUser"/> objects</response>
+        /// <response code="200">Returns a collection of all the users</response>
         [HttpGet]
         [Route("GetUsers")]
+        [ProducesResponseType(typeof(List<AppIdentityUser>), 200)]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -94,13 +101,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Assign a role to a specific user
+        /// Use this endpoint to assign a role to a specific user
         /// </summary>
-        /// <param name="request">The required user email and role name</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with a success message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with an error message</response>
+        /// <param name="request">This is the required user email and role name</param>
+        /// <response code="200">Returns a success message</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("AddUserToRole")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> AddUserToRole([FromBody] AuthorizationRequest request)
         {
             // check if the user exists
@@ -159,13 +168,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all the Identity Roles associated with the specific user
+        /// Use this endpoint to get all the Identity Roles associated with the specific user
         /// </summary>
-        /// <param name="email">The email address belonging to the user</param>
+        /// <param name="email">This is the email address belonging to the user</param>
         /// <response code="200">Returns a collection of role names</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with an error message</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
         [Route("GetUserRoles")]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> GetUserRoles(string email)
         {
             // check if the user exists
@@ -186,13 +197,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Unassigns a role from a specific user
+        /// Use this endpoint to remove a role from a specific user
         /// </summary>
-        /// <param name="request">The required user email and role name</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with a success message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with an error message</response>
+        /// <param name="request">This is required user email and role name</param>
+        /// <response code="200">Returns a success message</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("RemoveUserFromRole")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> RemoveUserFromRole([FromBody] AuthorizationRequest request)
         {
             // check if the user exists
