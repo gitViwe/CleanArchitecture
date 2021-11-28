@@ -3,6 +3,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using System.Security.Claims;
 
 namespace WebAPI.Controllers
@@ -12,6 +13,8 @@ namespace WebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     public class ClaimsController : ControllerBase
     {
         private readonly UserManager<AppIdentityUser> _userManager;
@@ -29,13 +32,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all claims associated with the specific user
+        /// Use this endpoint to get all claims associated with the specific user
         /// </summary>
-        /// <param name="email">The email address belonging to the user</param>
-        /// <response code="200">Returns a collection of <see cref="Claim"/> objects</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with error message</response>
+        /// <param name="email">This is the email address belonging to the user</param>
+        /// <response code="200">Returns a collection of claims</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
         [Route("GetUserClaims")]
+        [ProducesResponseType(typeof(List<Claim>), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> GetUserClaims(string email)
         {
             // check if the user exists
@@ -56,13 +61,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Add a claim to a specific user
+        /// Use this endpoint to add a claim to a specific user
         /// </summary>
-        /// <param name="request">The required user and claims information to process the request</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with response message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with error message</response>
+        /// <param name="request">This is the required user and claims information to process the request</param>
+        /// <response code="200">Returns a response message</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("AddClaimToUser")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> AddClaimToUser(UserClaimRequest request)
         {
             if (ModelState.IsValid)
@@ -103,13 +110,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all the claims associated with the specific role
+        /// Use this endpoint to get all the claims associated with the specific role
         /// </summary>
-        /// <param name="roleName">The name of the Identity Role</param>
-        /// <response code="200">Returns a collection of <see cref="Claim"/> objects</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with error message</response>
+        /// <param name="roleName">This is the name of the Identity Role</param>
+        /// <response code="200">Returns a collection of claims</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
         [Route("GetRoleClaims")]
+        [ProducesResponseType(typeof(List<Claim>), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> GetRoleClaims(string roleName)
         {
             // get the identity role using the role name
@@ -130,13 +139,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Add a claim to a specific role
+        /// Use this endpoint to add a claim to a specific role
         /// </summary>
-        /// <param name="request">The required role and claims information to process the request</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with response message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with error message</response>
+        /// <param name="request">This is the required role and claims information to process the request</param>
+        /// <response code="200">Returns a collection of claims</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("AddClaimToRole")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> AddClaimToRole(RoleClaimRequest request)
         {
             if (ModelState.IsValid)
@@ -177,13 +188,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Remove a claim from the user
+        /// Use this endpoint to remove a claim from the user
         /// </summary>
-        /// <param name="request">The required user and claims information to process the request</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with response message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with error message</response>
+        /// <param name="request">This is the required user and claims information to process the request</param>
+        /// <response code="200">Returns a collection of claims</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("RemoveUserClaim")]
+        [ProducesResponseType(typeof(List<Claim>), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> RemoveUserClaim(UserClaimRequest request)
         {
             if (ModelState.IsValid)
@@ -244,13 +257,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Remove a claim from the role
+        /// Use this endpoint to remove a claim from the role
         /// </summary>
-        /// <param name="request">The required role and claims information to process the request</param>
-        /// <response code="200">Returns a <see cref="BaseResponse"/> object with response message</response>
-        /// <response code="400">Returns a <see cref="BaseResponse"/> object with error message</response>
+        /// <param name="request">This is the required role and claims information to process the request</param>
+        /// <response code="200">Returns a collection of claims</response>
+        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route("RemoveRoleClaim")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 400)]
         public async Task<IActionResult> RemoveRoleClaim(RoleClaimRequest request)
         {
             if (ModelState.IsValid)
