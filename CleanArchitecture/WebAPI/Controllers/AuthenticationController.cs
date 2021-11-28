@@ -10,17 +10,20 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Utility.Cryptography;
+using System.Net.Mime;
 
 namespace WebAPI.Controllers
 {
     /// <summary>
-    /// This API controller facilitates user authorization
+    /// Use this API controller to authorize system users
     /// </summary>
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppIdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
@@ -31,7 +34,7 @@ namespace WebAPI.Controllers
         /// Facilitates dependency injection using constructor injection
         /// </summary>
         public AuthenticationController(
-            UserManager<IdentityUser> userManager,
+            UserManager<AppIdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptionsMonitor<JwtConfig> optionsMonitor,
             TokenValidationParameters validationParameters,
@@ -48,13 +51,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Registers a new user on the system
+        /// Use this endpoint to registers a new user on the system
         /// </summary>
-        /// <param name="registrationRequest">The required user information to register the user</param>
-        /// <response code="200">Returns a <see cref="AuthenticationResult"/> with the token and refresh token</response>
-        /// <response code="400">Returns a <see cref="RegistrationResponse"/> with collection of errors</response>
+        /// <param name="registrationRequest">This is the required user information to register the user</param>
+        /// <response code="200">Returns a model with the token and refresh token</response>
+        /// <response code="400">Returns a model with a collection of errors</response>
         [HttpPost]
         [Route("Register")]
+        [ProducesResponseType(typeof(AuthenticationResponse), 200)]
+        [ProducesResponseType(typeof(AuthenticationResponse), 400)]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationRequest)
         {
             if (ModelState.IsValid)
@@ -64,7 +69,7 @@ namespace WebAPI.Controllers
 
                 if (existingUser is not null)
                 {
-                    return BadRequest(new RegistrationResponse
+                    return BadRequest(new AuthenticationResponse
                     {
                         Errors = new string[] { "This email is already registered." },
                         Success = false
@@ -72,7 +77,7 @@ namespace WebAPI.Controllers
                 }
 
                 // create identity user object
-                var newUser = new IdentityUser { Email = registrationRequest.Email, UserName = registrationRequest.UserName };
+                var newUser = new AppIdentityUser { Email = registrationRequest.Email, UserName = registrationRequest.UserName };
                 // register new user using request details
                 var result = await _userManager.CreateAsync(newUser, registrationRequest.Password);
 
@@ -83,7 +88,7 @@ namespace WebAPI.Controllers
                 // user could not be registered
                 else
                 {
-                    return BadRequest(new RegistrationResponse
+                    return BadRequest(new AuthenticationResponse
                     {
                         // errors that occurred during user registration
                         Errors = result.Errors.Select(error => error.Description).ToArray(),
@@ -93,7 +98,7 @@ namespace WebAPI.Controllers
             }
 
             // model validation failed
-            return BadRequest(new RegistrationResponse
+            return BadRequest(new AuthenticationResponse
             {
                 Errors = new string[] { "Registration could not be processed." },
                 Success = false
@@ -101,13 +106,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Login an existing user
+        /// Use this endpoint to login an existing user
         /// </summary>
-        /// <param name="loginRequest">The required user information to login the user</param>
-        /// <response code="200">Returns a <see cref="AuthenticationResult"/> with the token and refresh token</response>
-        /// <response code="400">Returns a <see cref="RegistrationResponse"/> with collection of errors</response>
+        /// <param name="loginRequest">This is the required user information to login the user</param>
+        /// <response code="200">Returns a model with the token and refresh token</response>
+        /// <response code="400">Returns a model with a collection of errors</response>
         [HttpPost]
         [Route("Login")]
+        [ProducesResponseType(typeof(AuthenticationResponse), 200)]
+        [ProducesResponseType(typeof(AuthenticationResponse), 400)]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             if (ModelState.IsValid)
@@ -128,7 +135,7 @@ namespace WebAPI.Controllers
             }
 
             // model validation failed
-            return BadRequest(new RegistrationResponse
+            return BadRequest(new AuthenticationResponse
             {
                 Errors = new string[] { "Login details invalid." },
                 Success = false
@@ -136,13 +143,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Request a new token if the current token has expired
+        /// Use this endpoint to request a new token if the current token is invalid
         /// </summary>
-        /// <param name="tokenRequest">The required user information to verify the user and issue a new token</param>
-        /// <response code="200">Returns a <see cref="AuthenticationResult"/> with the token and refresh token</response>
-        /// <response code="400">Returns a <see cref="RegistrationResponse"/> with collection of errors</response>
+        /// <param name="tokenRequest">This is required user information to verify the user and issue a new token</param>
+        /// <response code="200">Returns a model with the token and refresh token</response>
+        /// <response code="400">Returns a model with a collection of errors</response>
         [HttpPost]
         [Route("RefreshToken")]
+        [ProducesResponseType(typeof(AuthenticationResponse), 200)]
+        [ProducesResponseType(typeof(AuthenticationResponse), 400)]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
         {
             if (ModelState.IsValid)
@@ -155,14 +164,14 @@ namespace WebAPI.Controllers
                 }
             }
             // model validation failed
-            return BadRequest(new RegistrationResponse
+            return BadRequest(new AuthenticationResponse
             {
                 Errors = new string[] { "Token refresh could not be processed." },
                 Success = false
             });
         }
 
-        private async Task<AuthenticationResult> GenerateJWTToken(IdentityUser user)
+        private async Task<AuthenticationResponse> GenerateJWTToken(AppIdentityUser user)
         {
             // create token handler object
             var handler = new JwtSecurityTokenHandler();
@@ -196,7 +205,7 @@ namespace WebAPI.Controllers
             await _dbContext.RefreshTokens.AddAsync(refreshToken);
             await _dbContext.SaveChangesAsync();
             // return the authentication result
-            return new AuthenticationResult()
+            return new AuthenticationResponse()
             {
                 Token = jwtToken,
                 RefreshToken = refreshToken.Token,
@@ -204,7 +213,7 @@ namespace WebAPI.Controllers
             };
         }
 
-        private async Task<AuthenticationResult> VerifyandGenerateToken(TokenRequest request)
+        private async Task<AuthenticationResponse> VerifyandGenerateToken(TokenRequest request)
         {
             var handler = new JwtSecurityTokenHandler();
             try
@@ -218,7 +227,7 @@ namespace WebAPI.Controllers
                     var result = securityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
                     if (result is false)
                     {
-                        return new AuthenticationResult()
+                        return new AuthenticationResponse()
                         {
                             Success = false,
                             Errors = new string[] { "Invalid request." }
@@ -231,7 +240,7 @@ namespace WebAPI.Controllers
                 var expiryDate = _conversion.UnixTimeStampToDateTime(expiry);
                 if (expiryDate > DateTime.UtcNow)
                 {
-                    return new AuthenticationResult()
+                    return new AuthenticationResponse()
                     {
                         Success = false,
                         Errors = new string[] { "The token has not yet expired." }
@@ -242,7 +251,7 @@ namespace WebAPI.Controllers
                 var storedToken = _dbContext.RefreshTokens.FirstOrDefault(item => item.Token == request.RefreshToken);
                 if (storedToken is null)
                 {
-                    return new AuthenticationResult()
+                    return new AuthenticationResponse()
                     {
                         Success = false,
                         Errors = new string[] { "The token does not exist." }
@@ -252,7 +261,7 @@ namespace WebAPI.Controllers
                 // verify that the token is not being used
                 if (storedToken.IsUsed)
                 {
-                    return new AuthenticationResult()
+                    return new AuthenticationResponse()
                     {
                         Success = false,
                         Errors = new string[] { "The token has already been used." }
@@ -262,7 +271,7 @@ namespace WebAPI.Controllers
                 // verify that the token has not been revoked
                 if (storedToken.IsRevoked)
                 {
-                    return new AuthenticationResult()
+                    return new AuthenticationResponse()
                     {
                         Success = false,
                         Errors = new string[] { "The token has been revoked." }
@@ -273,7 +282,7 @@ namespace WebAPI.Controllers
                 var tokenID = jwtClaims.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Jti).Value;
                 if (storedToken.JwtId != tokenID)
                 {
-                    return new AuthenticationResult()
+                    return new AuthenticationResponse()
                     {
                         Success = false,
                         Errors = new string[] { "The token is not valid." }
@@ -293,13 +302,13 @@ namespace WebAPI.Controllers
             {
                 if (ex.Message.Contains("Lifetime validation failed. The token is expired."))
                 {
-                    return new AuthenticationResult()
+                    return new AuthenticationResponse()
                     {
                         Success = false,
                         Errors = new string[] { "The token has expired, please login again." }
                     };
                 }
-                return new AuthenticationResult()
+                return new AuthenticationResponse()
                 {
                     Success = false,
                     Errors = new string[] { "We encountered an error, please try again." }
@@ -307,7 +316,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        private async Task<List<Claim>> GetAllValidClaims(IdentityUser user)
+        private async Task<List<Claim>> GetAllValidClaims(AppIdentityUser user)
         {
             // add required claims
             var claims = new List<Claim>()

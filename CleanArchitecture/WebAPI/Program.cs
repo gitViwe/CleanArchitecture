@@ -83,7 +83,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "WebAPI",
         Description = "A .NET 6 web API demo project to showcase clean architecture",
-        Version = "v0.5",
+        Version = "v0.6",
         Contact = new OpenApiContact()
         {
             Name = "Viwe Nkepu",
@@ -141,7 +141,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         // specify the swagger endpoint
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v0.5");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v0.6");
     });
 }
 
