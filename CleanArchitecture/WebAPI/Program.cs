@@ -26,10 +26,10 @@ builder.Services.AddDbContext<APIDbContext>(options =>
 });
 
 // register JWTConfig configuration section in dependency injection
-builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+builder.Services.Configure<JWTConfiguration>(builder.Configuration.GetSection("JWTConfiguration"));
 
 // get the JWT key from the APP settings file
-var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
+var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfiguration:Secret"]);
 
 // create the parameters used to validate
 var tokenValidationParams = new TokenValidationParameters

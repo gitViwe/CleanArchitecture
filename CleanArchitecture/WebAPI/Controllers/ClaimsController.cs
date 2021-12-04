@@ -1,4 +1,5 @@
-﻿using Core.DTO;
+﻿using Core.Request;
+using Core.Response;
 using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

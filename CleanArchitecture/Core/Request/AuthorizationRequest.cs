@@ -1,18 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.DTO
+namespace Core.Request
 {
     /// <summary>
-    /// Data Transfer Object for the user registration request
+    /// Data Transfer Object for the user - role request
     /// </summary>
-    public class RegistrationRequest
+    public class AuthorizationRequest
     {
-        [Required]
-        public string UserName { get; set; }
         [Required,
             EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         public string Email { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string RoleName { get; set; }
     }
 }
