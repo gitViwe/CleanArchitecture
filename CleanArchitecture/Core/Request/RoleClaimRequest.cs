@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.DTO
+namespace Core.Request
 {
     /// <summary>
     /// Data Transfer Object for the claims request

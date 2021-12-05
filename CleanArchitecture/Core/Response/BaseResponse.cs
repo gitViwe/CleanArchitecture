@@ -1,4 +1,4 @@
-﻿namespace Core.DTO
+﻿namespace Core.Response
 {
     /// <summary>
     /// Data Transfer Object for basic responses

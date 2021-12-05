@@ -1,6 +1,4 @@
-﻿using Core.DTO;
-using Core;
-using Infrastructure;
+﻿using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +9,9 @@ using System.Security.Claims;
 using System.Text;
 using Utility.Cryptography;
 using System.Net.Mime;
+using Core.Response;
+using Core.Request;
+using Core.Configuration;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Controllers
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
         private readonly IConversion _conversion;
-        private readonly JwtConfig _jwtConfig;
+        private readonly AppConfiguration _jwtConfig;
 
         /// <summary>
         /// Facilitates dependency injection using constructor injection
@@ -36,7 +37,7 @@ namespace WebAPI.Controllers
         public AuthenticationController(
             UserManager<AppIdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IOptionsMonitor<JwtConfig> optionsMonitor,
+            IOptionsMonitor<AppConfiguration> optionsMonitor,
             TokenValidationParameters validationParameters,
             APIDbContext dbContext,
             IConversion conversion)

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.DTO
+namespace Core.Request
 {
     public class TokenRequest
     {
