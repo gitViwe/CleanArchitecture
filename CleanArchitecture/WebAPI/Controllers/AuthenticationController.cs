@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
         private readonly IConversion _conversion;
-        private readonly JWTConfiguration _jwtConfig;
+        private readonly AppConfiguration _jwtConfig;
 
         /// <summary>
         /// Facilitates dependency injection using constructor injection
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
         public AuthenticationController(
             UserManager<AppIdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IOptionsMonitor<JWTConfiguration> optionsMonitor,
+            IOptionsMonitor<AppConfiguration> optionsMonitor,
             TokenValidationParameters validationParameters,
             APIDbContext dbContext,
             IConversion conversion)

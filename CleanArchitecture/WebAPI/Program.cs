@@ -1,149 +1,26 @@
-using Core.Configuration;
-using Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.Text;
 using Utility.Cryptography;
+using WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// add 'Utility.Cryptography' custom services
 builder.Services.AddEncryptionServices();
-
-// include database context for application
-builder.Services.AddDbContext<APIDbContext>(options =>
-{
-    // using an SQLite provider
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLite"), b => b.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
-});
-
-// register JWTConfig configuration section in dependency injection
-builder.Services.Configure<JWTConfiguration>(builder.Configuration.GetSection("JWTConfiguration"));
-
-// get the JWT key from the APP settings file
-var key = Encoding.ASCII.GetBytes(builder.Configuration["JWTConfiguration:Secret"]);
-
-// create the parameters used to validate
-var tokenValidationParams = new TokenValidationParameters
-{
-    // validates the signature of the key
-    ValidateIssuerSigningKey = true,
-    // specify the security key used for 
-    IssuerSigningKey = new SymmetricSecurityKey(key),
-    ValidateIssuer = false,
-    ValidateAudience = false,
-    ValidateLifetime = true,
-    RequireExpirationTime = false
-};
-
-// add Token Validation Parameters as singleton service
-builder.Services.AddSingleton(tokenValidationParams);
-
-// configures authentication using JWT
-builder.Services.AddAuthentication(options =>
-{
-    // specify default schema
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    // store bearer token on successful authentication
-    options.SaveToken = true;
-    // set the parameters used to validate
-    options.TokenValidationParameters = tokenValidationParams;
-});
-
-// configures authentication to use identity cookies
-builder.Services.AddIdentity<AppIdentityUser, IdentityRole>(options =>
-{
-    // require account to sign in
-    options.SignIn.RequireConfirmedAccount = true;
-    // password requirements
-    options.Password.RequireDigit = false;
-    options.Password.RequireNonAlphanumeric = false;
-}).AddEntityFrameworkStores<APIDbContext>();
+builder.Services.AddWebAPIDatabase(builder.Configuration);
+builder.Services.AddWebAPISections(builder.Configuration);
+builder.Services.AddWebAPIJWTAuthentication(builder.Configuration);
+builder.Services.AddWebAPIIdentity();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    // add swagger documentation
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "WebAPI",
-        Description = "A .NET 6 web API demo project to showcase clean architecture",
-        Version = "v0.6",
-        Contact = new OpenApiContact()
-        {
-            Name = "Viwe Nkepu",
-            Email = "viwe.nkepu@hotmail.com"
-        }
-    });
-
-    // create authorization scheme to swagger UI
-    var securitySchema = new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme.",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
-    };
-
-    // add authorization scheme to swagger UI
-    options.AddSecurityDefinition("Bearer", securitySchema);
-
-    // create security requirements
-    var securityRequirement = new OpenApiSecurityRequirement
-    {
-        { securitySchema, new[] { "Bearer" } }
-    };
-
-    // add security requirements to swagger UI
-    options.AddSecurityRequirement(securityRequirement);
-
-    // get the file path for XML documentation
-    var fileName = typeof(Program).GetTypeInfo().Assembly.GetName().Name + ".xml";
-    var xmlCommentsFilePath = Path.Combine(AppContext.BaseDirectory, fileName);
-    // add XML documentation to swagger UI
-    options.IncludeXmlComments(xmlCommentsFilePath, true);
-});
-
-// add CORS policy https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-6.0
-builder.Services.AddCors(opions =>
-{
-    // open policy for testing only
-    opions.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-});
+builder.Services.AddWebAPISwagger();
+builder.Services.AddWebAPICors(builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        // specify the swagger endpoint
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v0.6");
-    });
-}
+app.UseWebAPISwagger(app.Environment);
 
 app.UseHttpsRedirection();
 
@@ -152,8 +29,8 @@ app.UseRouting();
 
 if (app.Environment.IsDevelopment())
 {
-    // use the CORS policy as defined above
-    app.UseCors("Open"); 
+    // use the CORS policy as defined above 'AddWebAPICors'
+    app.UseCors();
 }
 
 // add authentication middle-ware
