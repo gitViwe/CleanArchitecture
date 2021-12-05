@@ -27,11 +27,8 @@ app.UseHttpsRedirection();
 // use routing
 app.UseRouting();
 
-if (app.Environment.IsDevelopment())
-{
-    // use the CORS policy as defined above 'AddWebAPICors'
-    app.UseCors();
-}
+// use the CORS policy as defined above 'AddWebAPICors'
+app.UseCors();
 
 // add authentication middle-ware
 app.UseAuthentication();
