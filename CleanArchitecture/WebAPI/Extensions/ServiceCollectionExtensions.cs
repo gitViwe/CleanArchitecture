@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Shared.Constant;
+using Shared.Constant.Application;
 using System.Reflection;
 using System.Text;
 
@@ -26,7 +26,7 @@ namespace WebAPI.Extensions
             return services.AddDbContext<APIDbContext>(options =>
             {
                 // using an SQLite provider
-                options.UseSqlite(configuration.GetConnectionString(ApplicationConstant.SQLite), b => b.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
+                options.UseSqlite(configuration.GetConnectionString(ConnectionString.SQLite), b => b.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
             });
         }
 
@@ -38,7 +38,7 @@ namespace WebAPI.Extensions
             IConfiguration configuration)
         {
             // get the JWT key from the APP settings file
-            var key = Encoding.ASCII.GetBytes(configuration[ApplicationConstant.Secret]);
+            var key = Encoding.ASCII.GetBytes(configuration[Configuration.Secret]);
 
             // create the parameters used to validate
             var tokenValidationParams = new TokenValidationParameters
@@ -172,7 +172,7 @@ namespace WebAPI.Extensions
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             // allow requests from this URL
-                            .WithOrigins(configuration[ApplicationConstant.ApplicationUrl].TrimEnd('/'));
+                            .WithOrigins(configuration[Configuration.ApplicationUrl].TrimEnd('/'));
                     });
             });
 
@@ -186,7 +186,10 @@ namespace WebAPI.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            return services.Configure<AppConfiguration>(configuration.GetSection(nameof(AppConfiguration)));
+            services.Configure<AppConfiguration>(configuration.GetSection(nameof(AppConfiguration)));
+            services.Configure<MongoDBConfiguration>(configuration.GetSection(nameof(MongoDBConfiguration)));
+
+            return services;
         }
     }
 }

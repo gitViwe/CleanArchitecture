@@ -7,11 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Utility.Cryptography;
 using System.Net.Mime;
 using Core.Response;
 using Core.Request;
 using Core.Configuration;
+using Shared.Utility;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +28,6 @@ namespace WebAPI.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
-        private readonly IConversion _conversion;
         private readonly AppConfiguration _jwtConfig;
 
         /// <summary>
@@ -39,14 +38,12 @@ namespace WebAPI.Controllers
             RoleManager<IdentityRole> roleManager,
             IOptionsMonitor<AppConfiguration> optionsMonitor,
             TokenValidationParameters validationParameters,
-            APIDbContext dbContext,
-            IConversion conversion)
+            APIDbContext dbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _validationParameters = validationParameters;
             _dbContext = dbContext;
-            _conversion = conversion;
             // inject the AppSettings 'JwtConfig' section values
             _jwtConfig = optionsMonitor.CurrentValue;
         }
@@ -200,7 +197,7 @@ namespace WebAPI.Controllers
                 UserId = user.Id,
                 AddedDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddMonths(1),
-                Token = _conversion.RandomString(35) + Guid.NewGuid()
+                Token = Conversion.RandomString(35) + Guid.NewGuid()
             };
             // save the refresh token entity in the database
             await _dbContext.RefreshTokens.AddAsync(refreshToken);
@@ -238,7 +235,7 @@ namespace WebAPI.Controllers
 
                 // verify that the expiry date has not passed
                 var expiry = long.Parse(jwtClaims.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Exp).Value);
-                var expiryDate = _conversion.UnixTimeStampToDateTime(expiry);
+                var expiryDate = Conversion.UnixTimeStampToDateTime(expiry);
                 if (expiryDate > DateTime.UtcNow)
                 {
                     return new AuthenticationResponse()
