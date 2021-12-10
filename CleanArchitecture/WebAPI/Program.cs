@@ -1,11 +1,9 @@
-using Utility.Cryptography;
 using WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddEncryptionServices();
 builder.Services.AddWebAPIDatabase(builder.Configuration);
 builder.Services.AddWebAPISections(builder.Configuration);
 builder.Services.AddWebAPIJWTAuthentication(builder.Configuration);
