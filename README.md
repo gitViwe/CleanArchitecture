@@ -83,8 +83,9 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
+Things you need to use the software and how to install them.
+* [Visual Studio](https://visualstudio.microsoft.com/)
+* [.NET 6](https://devblogs.microsoft.com/dotnet/announcing-net-6/)
 
 ### Installation
 
@@ -112,16 +113,21 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- NetCoreAPI:
+- WebAPI:
     - [x] .NET 5 Web API
     - [x] SwaggerUI
     - [x] JWT authentication
     - [ ] Hangfire
+    - [ ] Emailer
   - Blazor Web Assembly:
-    - [ ] Progressive Web Aapplication
+    - [x] Progressive Web Aapplication
+    - [ ] MudBlazor UI
+    - [ ] Local Storage
+    - [ ] Authorization & Authentication
   - Data:
     - [ ] Repository pattern
     - [ ] Unit of Work
+    - [ ] Memory Caching
 
 See the [open issues](https://github.com/gitViwe/CleanArchitecture/issues) for a full list of proposed features (and known issues).
 
