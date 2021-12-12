@@ -56,7 +56,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-.NET Project using clean architecture
+.NET 6 Project using clean architecture
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -85,7 +85,8 @@ To get a local copy up and running follow these simple example steps.
 
 Things you need to use the software and how to install them.
 * [Visual Studio](https://visualstudio.microsoft.com/)
-* [.NET 6](https://devblogs.microsoft.com/dotnet/announcing-net-6/)
+* [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [MongoDB Compass](https://www.mongodb.com/products/compass)
 
 ### Installation
 
@@ -120,13 +121,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [ ] Permission based authorization
     - [ ] Hangfire
     - [ ] Emailer
-  - Blazor Web Assembly:
+- Blazor Web Assembly:
     - [x] Progressive Web Aapplication
     - [ ] MudBlazor UI
     - [ ] Local Storage
     - [ ] Authorization & Authentication
     - [ ] SignalR Integration
-  - Data:
+- Data:
     - [ ] Repository pattern
     - [ ] Unit of Work
     - [ ] Memory Caching
@@ -178,8 +179,8 @@ Project Link: [https://github.com/gitViwe/CleanArchitecture](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
+* [Mukesh Murugan](https://github.com/iammukeshm)
+* [Tim Corey](https://www.iamtimcorey.com/)
 * []()
 
 <p align="right">(<a href="#top">back to top</a>)</p>
