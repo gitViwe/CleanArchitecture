@@ -117,6 +117,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] .NET 5 Web API
     - [x] SwaggerUI
     - [x] JWT authentication
+    - [ ] Permission based authorization
     - [ ] Hangfire
     - [ ] Emailer
   - Blazor Web Assembly:
@@ -124,6 +125,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [ ] MudBlazor UI
     - [ ] Local Storage
     - [ ] Authorization & Authentication
+    - [ ] SignalR Integration
   - Data:
     - [ ] Repository pattern
     - [ ] Unit of Work
