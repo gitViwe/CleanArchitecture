@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddWebAPIServices();
 builder.Services.AddWebAPIDatabase(builder.Configuration);
 builder.Services.AddWebAPISections(builder.Configuration);
 builder.Services.AddWebAPIJWTAuthentication(builder.Configuration);

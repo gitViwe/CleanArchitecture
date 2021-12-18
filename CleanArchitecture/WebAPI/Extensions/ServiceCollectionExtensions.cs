@@ -1,5 +1,6 @@
 ﻿using Core.Configuration;
 using Infrastructure;
+using Infrastructure.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -188,6 +189,16 @@ namespace WebAPI.Extensions
         {
             services.Configure<AppConfiguration>(configuration.GetSection(nameof(AppConfiguration)));
             services.Configure<MongoDBConfiguration>(configuration.GetSection(nameof(MongoDBConfiguration)));
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers Infrastructure services in dependency injection
+        /// </summary>
+        internal static IServiceCollection AddWebAPIServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;
         }
