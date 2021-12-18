@@ -123,8 +123,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [ ] Emailer
 - Blazor Web Assembly:
     - [x] Progressive Web Aapplication
-    - [ ] MudBlazor UI
-    - [ ] Local Storage
+    - [x] MudBlazor UI
+    - [x] Local Storage
     - [ ] Authorization & Authentication
     - [ ] SignalR Integration
 - Data:
@@ -181,7 +181,6 @@ Project Link: [https://github.com/gitViwe/CleanArchitecture](https://github.com/
 
 * [Mukesh Murugan](https://github.com/iammukeshm)
 * [Tim Corey](https://www.iamtimcorey.com/)
-* []()
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
