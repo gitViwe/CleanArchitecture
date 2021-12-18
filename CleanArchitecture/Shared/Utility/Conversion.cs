@@ -57,5 +57,17 @@
 
             return dateTimeVal;
         }
+
+        /// <summary>
+        /// This converts the base 64 string to a byte array
+        /// </summary>
+        /// <param name="payload">The base 64 string without padding</param>
+        /// <returns>A <see cref="byte"/> array value representing the string data</returns>
+        public static byte[] ParseBase64WithoutPadding(string payload)
+        {
+            payload = payload.Trim().Replace('-', '+').Replace('_', '/');
+            var base64 = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+            return Convert.FromBase64String(base64);
+        }
     }
 }
