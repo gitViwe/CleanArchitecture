@@ -199,6 +199,8 @@ namespace WebAPI.Extensions
         internal static IServiceCollection AddWebAPIServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<IClaimService, ClaimService>();
 
             return services;
         }

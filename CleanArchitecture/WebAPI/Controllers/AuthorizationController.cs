@@ -1,10 +1,13 @@
 ﻿using Core.Request;
 using Core.Response;
 using Infrastructure;
+using Infrastructure.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Constant.Message;
+using Shared.Wrapper;
 using System.Net.Mime;
 
 namespace WebAPI.Controllers
@@ -18,18 +21,11 @@ namespace WebAPI.Controllers
     [Consumes(MediaTypeNames.Application.Json)]
     public class AuthorizationController : ControllerBase
     {
-        private readonly UserManager<AppIdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IAuthorizationService _authorizationService;
 
-        /// <summary>
-        /// Facilitate dependency injection using constructor injection
-        /// </summary>
-        public AuthorizationController(
-            UserManager<AppIdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+        public AuthorizationController(IAuthorizationService authorizationService)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
+            _authorizationService = authorizationService;
         }
 
         /// <summary>
@@ -37,12 +33,11 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <response code="200">Returns a collection of all roles</response>
         [HttpGet]
-        [Route("GetRoles")]
-        [ProducesResponseType(typeof(List<IdentityRole>), 200)]
+        [Route(nameof(GetRoles))]
+        [ProducesResponseType(typeof(Result<List<IdentityRole>>), 200)]
         public async Task<IActionResult> GetRoles()
         {
-            var roles = await _roleManager.Roles.ToListAsync();
-            return Ok(roles);
+            return Ok(await _authorizationService.GetRolesAsync());
         }
 
         /// <summary>
@@ -52,40 +47,17 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a success message</response>
         /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
-        [Route("CreateRole")]
-        [ProducesResponseType(typeof(BaseResponse), 200)]
-        [ProducesResponseType(typeof(BaseResponse), 400)]
+        [Route(nameof(CreateRole))]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> CreateRole(string roleName)
         {
-            // check if the role already exists
-            var exists = await _roleManager.RoleExistsAsync(roleName);
-
-            if (exists)
+            if (string.IsNullOrWhiteSpace(roleName) == false)
             {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { "This role already exists." },
-                    Success = false
-                });
+                return Ok(await _authorizationService.CreateRoleAsync(roleName));
             }
 
-            // create new role
-            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
-
-            if (result.Succeeded)
-            {
-                return Ok(new BaseResponse
-                {
-                    Message = $"The role: {roleName} has been created.",
-                    Success = true
-                });
-            }
-
-            return BadRequest(new BaseResponse
-            {
-                Errors = new string[] { "Could not create role. Please try again." },
-                Success = false
-            });
+            return BadRequest(Result.Fail(ValidationError.Required(nameof(roleName))));
         }
 
         /// <summary>
@@ -93,12 +65,11 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <response code="200">Returns a collection of all the users</response>
         [HttpGet]
-        [Route("GetUsers")]
-        [ProducesResponseType(typeof(List<AppIdentityUser>), 200)]
+        [Route(nameof(GetUsers))]
+        [ProducesResponseType(typeof(Result<List<AppIdentityUser>>), 200)]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
-            return Ok(users);
+            return Ok(await _authorizationService.GetUsersAsync());
         }
 
         /// <summary>
@@ -108,64 +79,17 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a success message</response>
         /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
-        [Route("AddUserToRole")]
-        [ProducesResponseType(typeof(BaseResponse), 200)]
-        [ProducesResponseType(typeof(BaseResponse), 400)]
+        [Route(nameof(AddUserToRole))]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> AddUserToRole([FromBody] AuthorizationRequest request)
         {
-            // check if the user exists
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user is null)
+            if (ModelState.IsValid)
             {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { "The user does not exists." },
-                    Success = false
-                });
+                return Ok(await _authorizationService.AddUserToRoleAsync(request));
             }
 
-            // check if the role exists
-            var role = await _roleManager.FindByNameAsync(request.RoleName);
-
-            if (role is null)
-            {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { $"The role: {request.RoleName} does not exist." },
-                    Success = false
-                });
-            }
-
-            // check if the user is already assigned to the role
-            var isAssigned = await _userManager.IsInRoleAsync(user, request.RoleName);
-
-            if (isAssigned)
-            {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { $"The user: {user.UserName} is already assigned to the role: {request.RoleName}." },
-                    Success = false
-                });
-            }
-
-            // assign user to the role
-            var result = await _userManager.AddToRoleAsync(user, request.RoleName);
-
-            if (result.Succeeded)
-            {
-                return Ok(new BaseResponse
-                {
-                    Message = $"The user: {user.UserName} has been assigned to the role: {request.RoleName}." ,
-                    Success = true
-                });
-            }
-
-            return BadRequest(new BaseResponse
-            {
-                Errors = new string[] { "Could not be assigned to the role. Please try again." },
-                Success = false
-            });
+            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -175,26 +99,16 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a collection of role names</response>
         /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
-        [Route("GetUserRoles")]
-        [ProducesResponseType(typeof(List<string>), 200)]
-        [ProducesResponseType(typeof(BaseResponse), 400)]
+        [Route(nameof(GetUserRoles))]
+        [ProducesResponseType(typeof(Result<IList<string>>), 200)]
         public async Task<IActionResult> GetUserRoles(string email)
         {
-            // check if the user exists
-            var user = await _userManager.FindByEmailAsync(email);
-
-            if (user is null)
+            if (string.IsNullOrWhiteSpace(email) == false)
             {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { "The user does not exist." },
-                    Success = false
-                });
+                return Ok(await _authorizationService.GetUserRolesAsync(email)); 
             }
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            return Ok(userRoles);
+            return BadRequest(Result.Fail(ValidationError.Required(nameof(email))));
         }
 
         /// <summary>
@@ -204,52 +118,17 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a success message</response>
         /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
-        [Route("RemoveUserFromRole")]
-        [ProducesResponseType(typeof(BaseResponse), 200)]
-        [ProducesResponseType(typeof(BaseResponse), 400)]
+        [Route(nameof(RemoveUserFromRole))]
+        [ProducesResponseType(typeof(Result), 200)]
+        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> RemoveUserFromRole([FromBody] AuthorizationRequest request)
         {
-            // check if the user exists
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user is null)
+            if (ModelState.IsValid)
             {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { "The user does not exist." },
-                    Success = false 
-                });
+                return Ok(await _authorizationService.RemoveUserFromRoleAsync(request));
             }
 
-            // check if the role exists
-            var role = await _roleManager.FindByNameAsync(request.RoleName);
-
-            if (role is null)
-            {
-                return BadRequest(new BaseResponse
-                {
-                    Errors = new string[] { $"The role: {request.RoleName} does not exist." },
-                    Success = false
-                });
-            }
-
-            // remove user from the role
-            var result = await _userManager.RemoveFromRoleAsync(user, request.RoleName);
-
-            if (result.Succeeded)
-            {
-                return Ok(new BaseResponse
-                {
-                    Message = $"The user: {user.UserName} has been removed from the role: {request.RoleName}.",
-                    Success = true
-                });
-            }
-
-            return BadRequest(new BaseResponse
-            {
-                Errors = new string[] { "Could not be remove user from the role. Please try again." },
-                Success = false
-            });
+            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
     }
 }

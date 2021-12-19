@@ -1,19 +1,9 @@
-﻿using Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Net.Mime;
+﻿using Core.Request;
 using Core.Response;
-using Core.Request;
-using Core.Configuration;
-using Shared.Utility;
 using Infrastructure.Service;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Wrapper;
+using System.Net.Mime;
 
 namespace WebAPI.Controllers
 {
@@ -28,9 +18,6 @@ namespace WebAPI.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
 
-        /// <summary>
-        /// Facilitates dependency injection using constructor injection
-        /// </summary>
         public AuthenticationController(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
@@ -53,8 +40,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authenticationService.RegisterUserAsync(registrationRequest));
             }
 
-            // model validation failed
-            return BadRequest(Result.Fail("Registration could not be processed."));
+            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -74,8 +60,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authenticationService.LoginUserAsync(loginRequest));
             }
 
-            // model validation failed
-            return BadRequest(Result.Fail("Login details invalid."));
+            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -94,8 +79,8 @@ namespace WebAPI.Controllers
             {
                 return Ok(await _authenticationService.RefreshUserTokenAsync(tokenRequest));
             }
-            // model validation failed
-            return BadRequest(Result.Fail("Token refresh could not be processed."));
+
+            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
     }
 }
