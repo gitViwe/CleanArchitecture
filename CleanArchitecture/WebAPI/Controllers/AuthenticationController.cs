@@ -28,11 +28,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="registrationRequest">This is the required user information to register the user</param>
         /// <response code="200">Returns a model with the token and refresh token</response>
-        /// <response code="400">Returns a model with a collection of errors</response>
         [HttpPost]
         [Route(nameof(Register))]
         [ProducesResponseType(typeof(Result<AuthenticationResponse>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationRequest)
         {
             if (ModelState.IsValid)
@@ -40,7 +38,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authenticationService.RegisterUserAsync(registrationRequest));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -48,11 +46,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="loginRequest">This is the required user information to login the user</param>
         /// <response code="200">Returns a model with the token and refresh token</response>
-        /// <response code="400">Returns a model with a collection of errors</response>
         [HttpPost]
         [Route(nameof(Login))]
         [ProducesResponseType(typeof(Result<AuthenticationResponse>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             if (ModelState.IsValid)
@@ -60,7 +56,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authenticationService.LoginUserAsync(loginRequest));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -68,11 +64,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="tokenRequest">This is required user information to verify the user and issue a new token</param>
         /// <response code="200">Returns a model with the token and refresh token</response>
-        /// <response code="400">Returns a model with a collection of errors</response>
         [HttpPost]
         [Route(nameof(RefreshToken))]
         [ProducesResponseType(typeof(Result<AuthenticationResponse>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
         {
             if (ModelState.IsValid)
@@ -80,7 +74,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authenticationService.RefreshUserTokenAsync(tokenRequest));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
     }
 }

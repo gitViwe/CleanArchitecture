@@ -45,19 +45,12 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="roleName">This is the name of the Identity Role to create</param>
         /// <response code="200">Returns a success message</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route(nameof(CreateRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> CreateRole(string roleName)
         {
-            if (string.IsNullOrWhiteSpace(roleName) == false)
-            {
-                return Ok(await _authorizationService.CreateRoleAsync(roleName));
-            }
-
-            return BadRequest(Result.Fail(ValidationError.Required(nameof(roleName))));
+            return Ok(await _authorizationService.CreateRoleAsync(roleName));
         }
 
         /// <summary>
@@ -77,11 +70,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="request">This is the required user email and role name</param>
         /// <response code="200">Returns a success message</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route(nameof(AddUserToRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> AddUserToRole([FromBody] AuthorizationRequest request)
         {
             if (ModelState.IsValid)
@@ -89,7 +80,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authorizationService.AddUserToRoleAsync(request));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -97,18 +88,12 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="email">This is the email address belonging to the user</param>
         /// <response code="200">Returns a collection of role names</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
         [Route(nameof(GetUserRoles))]
         [ProducesResponseType(typeof(Result<IList<string>>), 200)]
         public async Task<IActionResult> GetUserRoles(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) == false)
-            {
-                return Ok(await _authorizationService.GetUserRolesAsync(email)); 
-            }
-
-            return BadRequest(Result.Fail(ValidationError.Required(nameof(email))));
+            return Ok(await _authorizationService.GetUserRolesAsync(email)); 
         }
 
         /// <summary>
@@ -116,11 +101,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="request">This is required user email and role name</param>
         /// <response code="200">Returns a success message</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route(nameof(RemoveUserFromRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> RemoveUserFromRole([FromBody] AuthorizationRequest request)
         {
             if (ModelState.IsValid)
@@ -128,7 +111,7 @@ namespace WebAPI.Controllers
                 return Ok(await _authorizationService.RemoveUserFromRoleAsync(request));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
     }
 }

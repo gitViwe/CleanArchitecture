@@ -33,19 +33,12 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="email">This is the email address belonging to the user</param>
         /// <response code="200">Returns a collection of claims</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
         [Route(nameof(GetUserClaims))]
         [ProducesResponseType(typeof(Result<IList<Claim>>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> GetUserClaims(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) == false)
-            {
-                return Ok(await _claimService.GetUserClaimsAsync(email));
-            }
-
-            return BadRequest(Result.Fail(ValidationError.Required(nameof(email))));
+            return Ok(await _claimService.GetUserClaimsAsync(email));
         }
 
         /// <summary>
@@ -65,7 +58,7 @@ namespace WebAPI.Controllers
                 return Ok(await _claimService.AddClaimToUserAsync(request)); 
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -73,19 +66,12 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="roleName">This is the name of the Identity Role</param>
         /// <response code="200">Returns a collection of claims</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpGet]
         [Route(nameof(GetRoleClaims))]
         [ProducesResponseType(typeof(Result<IList<Claim>>), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> GetRoleClaims(string roleName)
         {
-            if (string.IsNullOrWhiteSpace(roleName) == false)
-            {
-                return Ok(await _claimService.GetRoleClaimsAsync(roleName));
-            }
-
-            return BadRequest(ValidationError.Required(nameof(roleName)));
+            return Ok(await _claimService.GetRoleClaimsAsync(roleName));
         }
 
         /// <summary>
@@ -93,11 +79,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="request">This is the required role and claims information to process the request</param>
         /// <response code="200">Returns a response message</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route(nameof(AddClaimToRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> AddClaimToRole(RoleClaimRequest request)
         {
             if (ModelState.IsValid)
@@ -105,7 +89,7 @@ namespace WebAPI.Controllers
                 return Ok(await _claimService.AddClaimToRoleAsync(request)); 
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -113,11 +97,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="request">This is the required user and claims information to process the request</param>
         /// <response code="200">Returns a response message</response>
-        /// <response code="400">Returns a collection of error messages</response>
         [HttpPost]
         [Route(nameof(RemoveUserClaim))]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> RemoveUserClaim(UserClaimRequest request)
         {
             if (ModelState.IsValid)
@@ -125,19 +107,17 @@ namespace WebAPI.Controllers
                 return Ok(await _claimService.RemoveUserClaimAsync(request));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
         /// Use this endpoint to remove a claim from the role
         /// </summary>
         /// <param name="request">This is the required role and claims information to process the request</param>
-        /// <response code="200">Returns a collection of claims</response>
-        /// <response code="400">Returns a collection of error messages</response>
+        /// <response code="200">Returns a response message</response>
         [HttpPost]
         [Route(nameof(RemoveRoleClaim))]
         [ProducesResponseType(typeof(Result), 200)]
-        [ProducesResponseType(typeof(Result), 400)]
         public async Task<IActionResult> RemoveRoleClaim(RoleClaimRequest request)
         {
             if (ModelState.IsValid)
@@ -145,7 +125,7 @@ namespace WebAPI.Controllers
                 return Ok(await _claimService.RemoveRoleClaimAsync(request));
             }
 
-            return BadRequest(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
     }
 }
