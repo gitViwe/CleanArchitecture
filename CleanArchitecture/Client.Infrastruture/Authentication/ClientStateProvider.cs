@@ -1,4 +1,4 @@
-﻿using Client.Infrastruture.Service;
+﻿using Client.Infrastructure.Service;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Constant.Permission;
 using Shared.Constant.Storage;
@@ -7,21 +7,17 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace Client.Infrastruture.Authentication
+namespace Client.Infrastructure.Authentication
 {
     /// <summary>
     /// This class provides information abou the athentication state of the current user. Inherits from <see cref="AuthenticationStateProvider"/>
     /// </summary>
     public class ClientStateProvider : AuthenticationStateProvider
     {
-        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
 
-        public ClientStateProvider(
-            HttpClient httpClient,
-            ILocalStorageService localStorage)
+        public ClientStateProvider(ILocalStorageService localStorage)
         {
-            _httpClient = httpClient;
             _localStorage = localStorage;
         }
 
@@ -40,9 +36,6 @@ namespace Client.Infrastruture.Authentication
                 // return empty credentials if no token found
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
-
-            // use the saved token as the default authorization header value
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
 
             // get the authentication state using the saved token
             var authSatate = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(GetClaimsFromJwt(savedToken), "jwt")));

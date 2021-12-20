@@ -1,5 +1,5 @@
 ﻿
-namespace Client.Infrastruture.Service
+namespace Client.Infrastructure.Service
 {
     /// <summary>
     /// The HTTP service builds on the .NET Core HttpClient to simplify the code for making HTTP requests from other services

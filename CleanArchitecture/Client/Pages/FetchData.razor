@@ -1,5 +1,5 @@
 ﻿@page "/fetchdata"
-@inject HttpClient Http
+@inject IWeatherForecastManager _weatherForecastManager
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-5">
     <MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
@@ -32,21 +32,19 @@
 </MudContainer>
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private IEnumerable<WeatherForecast> forecasts;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
+        var result = await _weatherForecastManager.GetForecastAsync();
 
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        if (result.Succeeded)
+        {
+            forecasts = result.Data;
+        }
+        else
+        {
+            forecasts = new List<WeatherForecast>();
+        }
     }
 }

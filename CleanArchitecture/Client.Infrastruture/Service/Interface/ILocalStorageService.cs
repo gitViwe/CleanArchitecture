@@ -1,5 +1,5 @@
 ﻿
-namespace Client.Infrastruture.Service
+namespace Client.Infrastructure.Service
 {
     /// <summary>
     /// Allows access to browser local storage
