@@ -1,6 +1,7 @@
 ﻿using Core.Request;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Shared.Constant.Message;
 using Shared.Wrapper;
 
 namespace Infrastructure.Service
@@ -26,6 +27,11 @@ namespace Infrastructure.Service
 
         public async Task<IResult> CreateRoleAsync(string roleName)
         {
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                return Result.Fail(ValidationError.Required(nameof(roleName)));
+            }
+
             // check if the role already exists
             var exists = await _roleManager.RoleExistsAsync(roleName);
 
@@ -90,6 +96,11 @@ namespace Infrastructure.Service
 
         public async Task<IResult> GetUserRolesAsync(string email)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return Result.Fail(ValidationError.Required(nameof(email)));
+            }
+
             // check if the user exists
             var user = await _userManager.FindByEmailAsync(email);
 

@@ -3,13 +3,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Constant.Permission;
 using Shared.Constant.Storage;
 using Shared.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Client.Infrastruture.Authentication
 {
@@ -18,16 +14,21 @@ namespace Client.Infrastruture.Authentication
     /// </summary>
     public class ClientStateProvider : AuthenticationStateProvider
     {
-        private readonly IHttpService _httpClient;
+        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
 
         public ClientStateProvider(
-            IHttpService httpClient,
+            HttpClient httpClient,
             ILocalStorageService localStorage)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
         }
+
+        /// <summary>
+        /// The current user's claims principal
+        /// </summary>
+        public ClaimsPrincipal AuthenticationStateUser { get; private set; }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -40,11 +41,56 @@ namespace Client.Infrastruture.Authentication
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
+            // use the saved token as the default authorization header value
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
+
             // get the authentication state using the saved token
             var authSatate = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(GetClaimsFromJwt(savedToken), "jwt")));
 
+            // get the authentication state user value
+            AuthenticationStateUser = authSatate.User;
 
-            throw new NotImplementedException();
+            return authSatate;
+        }
+
+        /// <summary>
+        /// Gets the current authentication state user
+        /// </summary>
+        /// <returns>The current user's claims principal</returns>
+        public async Task<ClaimsPrincipal> GetAuthenticationStateUserAsync()
+        {
+            var authState = await this.GetAuthenticationStateAsync();
+
+            var authStateUser = authState.User;
+
+            return authStateUser;
+        }
+
+        /// <summary>
+        /// Change the authentication state when user logs out
+        /// </summary>
+        public void MarkUserAsLoggedOut()
+        {
+            // create blank user claims principal
+            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
+
+            // create authentication state using blank user
+            var authState = Task.FromResult(new AuthenticationState(anonymousUser));
+
+            // update the authentication state
+            NotifyAuthenticationStateChanged(authState);
+        }
+
+        /// <summary>
+        /// Change the authentication state
+        /// </summary>
+        public async Task StateChangedAsync()
+        {
+            // verify the current authentication state
+            var authState = Task.FromResult(await GetAuthenticationStateAsync());
+
+            // update the authentication state
+            NotifyAuthenticationStateChanged(authState);
         }
 
         private IEnumerable<Claim> GetClaimsFromJwt(string jwt)

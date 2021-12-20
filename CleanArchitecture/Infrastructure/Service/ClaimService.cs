@@ -1,12 +1,8 @@
 ﻿using Core.Request;
 using Microsoft.AspNetCore.Identity;
+using Shared.Constant.Message;
 using Shared.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Service
 {
@@ -25,6 +21,11 @@ namespace Infrastructure.Service
 
         public async Task<IResult> GetUserClaimsAsync(string email)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return Result.Fail(ValidationError.Required(nameof(email)));
+            }
+
             // check if the user exists
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -64,6 +65,11 @@ namespace Infrastructure.Service
 
         public async Task<IResult> GetRoleClaimsAsync(string roleName)
         {
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                return Result.Fail(ValidationError.Required(nameof(roleName)));
+            }
+
             // get the identity role using the role name
             var role = await _roleManager.FindByNameAsync(roleName);
 
