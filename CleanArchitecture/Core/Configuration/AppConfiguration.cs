@@ -7,5 +7,6 @@
     {
         public string Secret { get; set; }
         public string ApplicationUrl { get; set; }
+        public string ServerUrl { get; set; }
     }
 }

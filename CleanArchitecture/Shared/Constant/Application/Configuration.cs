@@ -14,5 +14,10 @@
         /// Map to the "ApplicationUrl" value in the "AppConfiguration" section
         /// </summary>
         public const string ApplicationUrl = "AppConfiguration:ApplicationUrl";
+
+        /// <summary>
+        /// Map to the "ApplicationUrl" value in the "AppConfiguration" section
+        /// </summary>
+        public const string ServerUrl = "AppConfiguration:ServerUrl";
     }
 }

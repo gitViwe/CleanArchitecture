@@ -173,7 +173,7 @@ namespace WebAPI.Extensions
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             // allow requests from this URL
-                            .WithOrigins(configuration[Configuration.ApplicationUrl].TrimEnd('/'));
+                            .WithOrigins(configuration[Configuration.ServerUrl].TrimEnd('/'), configuration[Configuration.ApplicationUrl].TrimEnd('/'));
                     });
             });
 
