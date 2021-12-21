@@ -10,28 +10,29 @@ namespace Client.Pages.Auth
         /// <summary>
         /// The login view model
         /// </summary>
-        LoginRequest _model { get; set; } = new();
+        LoginRequest Model { get; set; } = new();
 
-        bool PasswordVisibility;
-        InputType PasswordInput = InputType.Password;
-        string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+        bool _passwordVisibility;
+        InputType _passwordInput = InputType.Password;
+        string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+        bool _processing;
 
         /// <summary>
         /// The password input field visibility event
         /// </summary>
         void TogglePasswordVisibility()
         {
-            if (PasswordVisibility)
+            if (_passwordVisibility)
             {
-                PasswordVisibility = false;
-                PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-                PasswordInput = InputType.Password;
+                _passwordVisibility = false;
+                _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+                _passwordInput = InputType.Password;
             }
             else
             {
-                PasswordVisibility = true;
-                PasswordInputIcon = Icons.Material.Filled.Visibility;
-                PasswordInput = InputType.Text;
+                _passwordVisibility = true;
+                _passwordInputIcon = Icons.Material.Filled.Visibility;
+                _passwordInput = InputType.Text;
             }
         }
 
@@ -47,6 +48,7 @@ namespace Client.Pages.Auth
             {
                 // redirect user to the home page
                 _navigationManager.NavigateTo("/");
+                _snackBar.Add("You are already logged in.", Severity.Success);
             }
         }
 
@@ -56,8 +58,10 @@ namespace Client.Pages.Auth
         /// <returns></returns>
         private async Task SubmitAsync()
         {
+            _processing = true;
+
             // attempt login
-            var result = await _authenticationManager.Login(_model);
+            var result = await _authenticationManager.Login(Model);
 
             if (result.Succeeded == false)
             {
@@ -72,6 +76,8 @@ namespace Client.Pages.Auth
                 // redirect user to the home page
                 _navigationManager.NavigateTo("/");
             }
+
+            _processing = false;
         }
     }
 }

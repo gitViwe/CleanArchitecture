@@ -2,7 +2,7 @@
 @page "/auth/login"
 @inject IAuthenticationManager _authenticationManager
 
-<EditForm Model="_model" OnValidSubmit="SubmitAsync">
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
 
     <DataAnnotationsValidator />
 
@@ -15,19 +15,19 @@
         Don't have an account? <MudLink Href="/auth/register">Register</MudLink>
     </MudText>
 
-    <MudTextField Label="E-mail"
-                  @bind-Value="_model.Email"
-                  For="@(() => _model.Email)"
+    <MudTextField Label="Email Address"
+                  @bind-Value="Model.Email"
+                  For="@(() => Model.Email)"
                   Variant="Variant.Outlined"
                   Class="my-6" />
 
-    <MudTextField InputType="@PasswordInput" 
+    <MudTextField InputType="@_passwordInput" 
                   Label="Password"
-                  @bind-Value="_model.Password"
-                  For="@(() => _model.Password)"
+                  @bind-Value="Model.Password"
+                  For="@(() => Model.Password)"
                   Variant="Variant.Outlined"
                   Adornment="Adornment.End"
-                  AdornmentIcon="@PasswordInputIcon"
+                  AdornmentIcon="@_passwordInputIcon"
                   OnAdornmentClick="TogglePasswordVisibility" />
 
     <div Class="d-flex justify-space-between align-center">
@@ -41,8 +41,19 @@
                Variant="Variant.Filled"
                Color="Color.Primary"
                Size="Size.Large"
+               Disabled = "_processing"
                FullWidth="true">
-        Sign In
+        @if(_processing)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+            <MudText Class="ms-2">Processing</MudText>
+        }
+        else
+        {
+            <MudText>
+                Sign In
+            </MudText>
+        }
     </MudButton>
 </EditForm>
 

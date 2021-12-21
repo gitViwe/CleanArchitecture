@@ -8,9 +8,11 @@ namespace Core.Request
     public class LoginRequest
     {
         [Required,
+            Display(Name = "Email Address"),
             EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         public string Email { get; set; }
-        [Required]
+        [Required,
+            Display(Name = "Password")]
         public string Password { get; set; }
     }
 }

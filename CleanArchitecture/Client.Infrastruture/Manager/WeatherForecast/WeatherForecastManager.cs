@@ -2,7 +2,7 @@
 using Core.Response;
 using Shared.Wrapper;
 
-namespace Client.Infrastructure.Manager.Demo
+namespace Client.Infrastructure.Manager.Forecast
 {
     public class WeatherForecastManager : IWeatherForecastManager
     {

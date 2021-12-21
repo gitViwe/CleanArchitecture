@@ -1,6 +1,6 @@
 ﻿using Client.Infrastructure.Authentication;
 using Client.Infrastructure.Manager.Authentication;
-using Client.Infrastructure.Manager.Demo;
+using Client.Infrastructure.Manager.Forecast;
 using Client.Infrastructure.Service;
 using Microsoft.AspNetCore.Components.Authorization;
 

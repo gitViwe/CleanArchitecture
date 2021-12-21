@@ -7,8 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shared.Constant.Application;
+using Shared.Constant.Permission;
+using Shared.Wrapper;
+using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace WebAPI.Extensions
 {
@@ -62,8 +66,8 @@ namespace WebAPI.Extensions
             {
                 // specify default schema
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -71,6 +75,59 @@ namespace WebAPI.Extensions
                 options.SaveToken = true;
                 // set the parameters used to validate
                 options.TokenValidationParameters = tokenValidationParams;
+
+                options.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = c =>
+                    {
+                        if (c.Exception is SecurityTokenExpiredException)
+                        {
+                            c.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            c.Response.ContentType = "application/json";
+                            var result = JsonSerializer.Serialize(Result.Fail("The Token is expired."));
+                            return c.Response.WriteAsync(result);
+                        }
+                        else
+                        {
+                            c.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            c.Response.ContentType = "application/json";
+                            var result = JsonSerializer.Serialize(Result.Fail("An unhandled error has occurred."));
+                            return c.Response.WriteAsync(result);
+                        }
+                    },
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        if (!context.Response.HasStarted)
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            var result = JsonSerializer.Serialize(Result.Fail("You are not Authorized."));
+                            return context.Response.WriteAsync(result);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        context.Response.ContentType = "application/json";
+                        var result = JsonSerializer.Serialize(Result.Fail("You are not authorized to access this resource."));
+                        return context.Response.WriteAsync(result);
+                    },
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
+                {
+                    var propertyValue = prop.GetValue(null);
+                    if (propertyValue is not null)
+                    {
+                        options.AddPolicy(propertyValue.ToString(), policy => policy.RequireClaim(ApplicationClaimTypes.Permission, propertyValue.ToString()));
+                    }
+                }
             });
 
             return services;
@@ -88,7 +145,8 @@ namespace WebAPI.Extensions
                 // password requirements
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<APIDbContext>();
+            }).AddEntityFrameworkStores<APIDbContext>()
+            .AddDefaultTokenProviders();
 
             return services;
         }
