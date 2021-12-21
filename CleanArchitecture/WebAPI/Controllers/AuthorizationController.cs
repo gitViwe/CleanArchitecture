@@ -1,12 +1,8 @@
 ﻿using Core.Request;
-using Core.Response;
 using Infrastructure;
 using Infrastructure.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Shared.Constant.Message;
 using Shared.Wrapper;
 using System.Net.Mime;
 
@@ -93,7 +89,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(Result<IList<string>>), 200)]
         public async Task<IActionResult> GetUserRoles(string email)
         {
-            return Ok(await _authorizationService.GetUserRolesAsync(email)); 
+            return Ok(await _authorizationService.GetUserRolesAsync(email));
         }
 
         /// <summary>

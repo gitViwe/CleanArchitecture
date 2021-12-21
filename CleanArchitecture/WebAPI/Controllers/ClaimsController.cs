@@ -1,11 +1,6 @@
 ﻿using Core.Request;
-using Core.Response;
-using Infrastructure;
 using Infrastructure.Service;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Constant.Message;
 using Shared.Wrapper;
 using System.Net.Mime;
 using System.Security.Claims;
@@ -55,7 +50,7 @@ namespace WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                return Ok(await _claimService.AddClaimToUserAsync(request)); 
+                return Ok(await _claimService.AddClaimToUserAsync(request));
             }
 
             return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
@@ -86,7 +81,7 @@ namespace WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                return Ok(await _claimService.AddClaimToRoleAsync(request)); 
+                return Ok(await _claimService.AddClaimToRoleAsync(request));
             }
 
             return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));

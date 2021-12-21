@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shared.Constant.Application;
+using Shared.Constant.Message;
 using Shared.Constant.Permission;
 using Shared.Wrapper;
 using System.Net;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -67,7 +69,6 @@ namespace WebAPI.Extensions
                 // specify default schema
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -75,23 +76,25 @@ namespace WebAPI.Extensions
                 options.SaveToken = true;
                 // set the parameters used to validate
                 options.TokenValidationParameters = tokenValidationParams;
-
+                // set JWT authorization events
                 options.Events = new JwtBearerEvents()
                 {
                     OnAuthenticationFailed = c =>
                     {
+                        // JWT token has expired
                         if (c.Exception is SecurityTokenExpiredException)
                         {
                             c.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                            c.Response.ContentType = "application/json";
-                            var result = JsonSerializer.Serialize(Result.Fail("The Token is expired."));
+                            c.Response.ContentType = MediaTypeNames.Application.Json;
+                            var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.ExpiredToken));
                             return c.Response.WriteAsync(result);
                         }
+                        // unhandled server error
                         else
                         {
                             c.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            c.Response.ContentType = "application/json";
-                            var result = JsonSerializer.Serialize(Result.Fail("An unhandled error has occurred."));
+                            c.Response.ContentType = MediaTypeNames.Application.Json;
+                            var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.InternalServerError));
                             return c.Response.WriteAsync(result);
                         }
                     },
@@ -101,8 +104,8 @@ namespace WebAPI.Extensions
                         if (!context.Response.HasStarted)
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                            context.Response.ContentType = "application/json";
-                            var result = JsonSerializer.Serialize(Result.Fail("You are not Authorized."));
+                            context.Response.ContentType = MediaTypeNames.Application.Json;
+                            var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.Unauthorized));
                             return context.Response.WriteAsync(result);
                         }
 
@@ -111,8 +114,8 @@ namespace WebAPI.Extensions
                     OnForbidden = context =>
                     {
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        context.Response.ContentType = "application/json";
-                        var result = JsonSerializer.Serialize(Result.Fail("You are not authorized to access this resource."));
+                        context.Response.ContentType = MediaTypeNames.Application.Json;
+                        var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.Forbidden));
                         return context.Response.WriteAsync(result);
                     },
                 };

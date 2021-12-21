@@ -2,7 +2,6 @@ using Core.Response;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Constant.Permission;
 using Shared.Wrapper;
 
 namespace WebAPI.Controllers
