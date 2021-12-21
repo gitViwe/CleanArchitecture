@@ -21,6 +21,8 @@ namespace Client.Extensions
             services.AddTransient<ClientAuthenticationHeader>();
             services.AddScoped<ILocalStorageService, LocalStorageService>();
 
+            
+
             return services;
         }
 
@@ -44,12 +46,16 @@ namespace Client.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddHttpClient<IWeatherForecastManager, WeatherForecastManager>
-                (client => client.BaseAddress = new Uri(configuration["AppConfiguration:ServerUrl"].TrimEnd('/')))
-                .AddHttpMessageHandler<ClientAuthenticationHeader>();
+            // register manager services
+            services.AddTransient<IWeatherForecastManager, WeatherForecastManager>();
+            services.AddTransient<IAuthenticationManager, AuthenticationManager>();
 
-            services.AddHttpClient<IAuthenticationManager, AuthenticationManager>
-                (client => client.BaseAddress = new Uri(configuration["AppConfiguration:ServerUrl"].TrimEnd('/')))
+            // add a named HTTP client and handler
+            services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("PWA.Client"))
+                .AddHttpClient("PWA.Client", client =>
+                {
+                    client.BaseAddress = new Uri(configuration["AppConfiguration:ServerUrl"].TrimEnd('/'));
+                })
                 .AddHttpMessageHandler<ClientAuthenticationHeader>();
 
             return services;

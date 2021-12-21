@@ -19,10 +19,14 @@
 @using Client
 @using Client.Shared
 @using Client.Configuration
+@using Client.Infrastructure.Authentication
 @using Client.Infrastructure.Manager.Demo
+@using Client.Infrastructure.Manager.Authentication
 
 @*Add references to pages*@
 @using Client.Pages.Auth
 
 @*Inject services and managers*@
 @inject NavigationManager _navigationManager
+@inject ClientStateProvider _authenticationState
+@inject ISnackbar _snackBar
