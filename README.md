@@ -56,7 +56,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-.NET Project using clean architecture
+.NET 6 Project using clean architecture
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -83,8 +83,10 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
+Things you need to use the software and how to install them.
+* [Visual Studio](https://visualstudio.microsoft.com/)
+* [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [MongoDB Compass](https://www.mongodb.com/products/compass)
 
 ### Installation
 
@@ -112,16 +114,23 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- NetCoreAPI:
+- WebAPI:
     - [x] .NET 5 Web API
     - [x] SwaggerUI
     - [x] JWT authentication
+    - [ ] Permission based authorization
     - [ ] Hangfire
-  - Blazor Web Assembly:
-    - [ ] Progressive Web Aapplication
-  - Data:
+    - [ ] Emailer
+- Blazor Web Assembly:
+    - [x] Progressive Web Aapplication
+    - [x] MudBlazor UI
+    - [x] Local Storage
+    - [ ] Authorization & Authentication
+    - [ ] SignalR Integration
+- Data:
     - [ ] Repository pattern
     - [ ] Unit of Work
+    - [ ] Memory Caching
 
 See the [open issues](https://github.com/gitViwe/CleanArchitecture/issues) for a full list of proposed features (and known issues).
 
@@ -170,9 +179,8 @@ Project Link: [https://github.com/gitViwe/CleanArchitecture](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [Mukesh Murugan](https://github.com/iammukeshm)
+* [Tim Corey](https://www.iamtimcorey.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
