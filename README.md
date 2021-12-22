@@ -118,14 +118,16 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] .NET 5 Web API
     - [x] SwaggerUI
     - [x] JWT authentication
-    - [ ] Permission based authorization
+    - [x] Permission based authorization
+    - [ ] Extend IdentityUser
     - [ ] Hangfire
     - [ ] Emailer
 - Blazor Web Assembly:
     - [x] Progressive Web Aapplication
     - [x] MudBlazor UI
     - [x] Local Storage
-    - [ ] Authorization & Authentication
+    - [x] Authorization & Authentication
+    - [ ] User Account Management
     - [ ] SignalR Integration
 - Data:
     - [ ] Repository pattern
