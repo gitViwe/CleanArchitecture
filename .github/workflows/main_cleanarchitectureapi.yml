@@ -27,12 +27,6 @@ jobs:
 
       - name: dotnet publish
         run: dotnet publish CleanArchitecture/WebAPI -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
         
       - name: App Settings Variable Substitution
         uses: microsoft/variable-substitution@v1
@@ -42,6 +36,12 @@ jobs:
           ConnectionStrings.SQLite: ${{secrets.SQLITE_CONNECTION}}
           AppConfiguration.Secret: ${{secrets.JWT_SECRET_KEY}}
           AppConfiguration.ApplicationUrl: ${{secrets.CLIENT_APPLICATION_URL}}
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
