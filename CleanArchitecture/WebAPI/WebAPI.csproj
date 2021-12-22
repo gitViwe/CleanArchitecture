@@ -48,4 +48,10 @@
     </Resource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="identity.db-wal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
