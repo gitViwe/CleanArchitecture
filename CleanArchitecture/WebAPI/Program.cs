@@ -38,4 +38,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
+app.UseDeveloperExceptionPage();
+
 app.Run();
