@@ -121,14 +121,21 @@ namespace WebAPI.Extensions
                 };
             });
 
+            // add authorization to apply policy
             services.AddAuthorization(options =>
             {
+                // get all permissions from static properties
                 foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
                 {
+                    // get property value
                     var propertyValue = prop.GetValue(null);
+
                     if (propertyValue is not null)
                     {
-                        options.AddPolicy(propertyValue.ToString(), policy => policy.RequireClaim(ApplicationClaimTypes.Permission, propertyValue.ToString()));
+                        // add new permission policy
+                        options.AddPolicy(propertyValue.ToString(), policy => policy.RequireClaim(ApplicationClaimTypes.Permission, propertyValue.ToString())
+                               // add JWT Bearer authentication scheme to this policy
+                               .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme));
                     }
                 }
             });
@@ -186,7 +193,7 @@ namespace WebAPI.Extensions
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
                     Reference = new OpenApiReference
                     {
                         Type = ReferenceType.SecurityScheme,

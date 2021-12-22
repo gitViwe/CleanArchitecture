@@ -1,42 +1,68 @@
 ﻿@layout AuthLayout
 @page "/auth/register"
+@inject IAuthenticationManager _authenticationManager
 
-<MudForm>
-    <MudText Typo="Typo.h4" GutterBottom="true">Sign Up</MudText>
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
 
-    <MudText>Already have an account? <MudLink Href="/auth/login">Login</MudLink></MudText>
+    <DataAnnotationsValidator />
+    
+    <MudText Typo="Typo.h4"
+             GutterBottom="true">
+        Sign Up
+    </MudText>
 
-    <MudTextField T="string" Label="Username" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+    <MudText>
+        Already have an account? <MudLink Href="/auth/login">Login</MudLink>
+    </MudText>
 
-    <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+    <MudTextField Label="User name"
+                  @bind-Value="Model.UserName"
+                  For="@(() => Model.UserName)"
+                  Variant="Variant.Outlined"
+                  Class="my-6" />
 
-    <MudTextField @bind-Value="@Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-6"/>
+    <MudTextField Label="Email Address"
+                  @bind-Value="Model.Email"
+                  For="@(() => Model.Email)"
+                  Variant="Variant.Outlined"
+                  Class="my-6" />
 
-    <MudTextField T="string" Label="Confirm Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="my-6"/>
+    <MudTextField InputType="@_passwordInput" 
+                  Label="Password"
+                  @bind-Value="Model.Password"
+                  For="@(() => Model.Password)"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@_passwordInputIcon"
+                  OnAdornmentClick="TogglePasswordVisibility"
+                  Class="my-6" />
 
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="/" Size="Size.Large" FullWidth="true">Sign Up</MudButton>
-</MudForm>
+    <MudTextField InputType="@_passwordInput" 
+                  Label="Confirm Password"
+                  @bind-Value="Model.PasswordConfirmation"
+                  For="@(() => Model.PasswordConfirmation)"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@_passwordInputIcon"
+                  OnAdornmentClick="TogglePasswordVisibility"
+                  Class="my-6" />
 
-@code {
-    string Password { get; set; }
-
-    bool PasswordVisibility;
-    InputType PasswordInput = InputType.Password;
-    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-
-    void TogglePasswordVisibility()
-    {
-        @if (PasswordVisibility)
+    <MudButton ButtonType="ButtonType.Submit" 
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               Size="Size.Large"
+               Disabled = "_processing"
+               FullWidth="true">
+        @if(_processing)
         {
-            PasswordVisibility = false;
-            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-            PasswordInput = InputType.Password;
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+            <MudText Class="ms-2">Processing</MudText>
         }
         else
         {
-            PasswordVisibility = true;
-            PasswordInputIcon = Icons.Material.Filled.Visibility;
-            PasswordInput = InputType.Text;
+            <MudText>
+                Sign Up
+            </MudText>
         }
-    }
-}
+    </MudButton>
+</EditForm>

@@ -9,5 +9,10 @@
         /// The end point to login
         /// </summary>
         public const string Login = "api/Authentication/Login";
+
+        /// <summary>
+        /// The end point to register
+        /// </summary>
+        public const string Register = "api/Authentication/Register";
     }
 }

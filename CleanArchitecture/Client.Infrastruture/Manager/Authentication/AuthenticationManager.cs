@@ -59,5 +59,32 @@ namespace Client.Infrastructure.Manager.Authentication
 
             return Result.Fail(result.Messages);
         }
+
+        public async Task<IResult> Register(RegistrationRequest request)
+        {
+            // make a get request to the API end point
+            var response = await _httpClient.PostAsJsonAsync(Route.AuthenticationEndpoints.Register, request);
+
+            // process the response into a 'Result' object
+            var result = await response.ToResult<AuthenticationResponse>();
+
+            if (result.Succeeded)
+            {
+                // get tokens from response data
+                var token = result.Data.Token;
+                var refreshToken = result.Data.RefreshToken;
+
+                // store tokens on the client side
+                await _localStorage.SetItemAsync(ClientStorage.Local.AuthToken, token);
+                await _localStorage.SetItemAsync(ClientStorage.Local.RefreshToken, refreshToken);
+
+                // update the authentication state
+                await ((ClientStateProvider)_authenticationStateProvider).StateChangedAsync();
+
+                return Result.Success();
+            }
+
+            return Result.Fail(result.Messages);
+        }
     }
 }

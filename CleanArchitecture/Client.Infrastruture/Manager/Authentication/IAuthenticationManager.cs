@@ -21,5 +21,12 @@ namespace Client.Infrastructure.Manager.Authentication
         /// <param name="request">The user details required for login</param>
         /// <returns>The response message</returns>
         Task<IResult> Login(LoginRequest request);
+
+        /// <summary>
+        /// Send a registration request to the API
+        /// </summary>
+        /// <param name="request">The user details required for registration</param>
+        /// <returns>The response message</returns>
+        Task<IResult> Register(RegistrationRequest request);
     }
 }
