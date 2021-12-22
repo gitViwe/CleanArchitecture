@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy Azure Web App - CleanArchitectureAPI
+name: Build and deploy ASP.Net Core app to Azure Web App - CleanArchitectureAPI
 
 on:
   push:
@@ -20,28 +20,19 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
-          include-prerelease: false
+          include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build CleanArchitecture/WebAPI --configuration Release
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish CleanArchitecture/WebAPI -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
-        
-      - name: App Settings Variable Substitution
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '${{env.DOTNET_ROOT}}/myapp/appsettings.json'
-        env:
-          ConnectionStrings.SQLite: ${{secrets.SQLITE_CONNECTION}}
-          AppConfiguration.Secret: ${{secrets.JWT_SECRET_KEY}}
-          AppConfiguration.ApplicationUrl: ${{secrets.CLIENT_APPLICATION_URL}}
 
   deploy:
     runs-on: windows-latest
@@ -62,5 +53,5 @@ jobs:
         with:
           app-name: 'CleanArchitectureAPI'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7EE2ADEABF1C447A820BFE1D8AB0F011 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9638989F94504C9397455765C7A814D0 }}
           package: .
