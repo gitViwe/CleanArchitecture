@@ -1,0 +1,8 @@
+﻿<!-- Only redirects the user to the login page -->
+
+@code{
+    protected override void OnInitialized()
+    {
+        _navigationManager.NavigateTo("/auth/login");
+    }
+}

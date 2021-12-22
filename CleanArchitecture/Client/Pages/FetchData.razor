@@ -1,52 +1,54 @@
 ﻿@page "/fetchdata"
-@inject HttpClient Http
+@attribute [Authorize]
+@inject IWeatherForecastManager _weatherForecastManager
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-5">
     <MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
     <MudText Class="mb-8">This component demonstrates fetching data from the API.</MudText>
 
-    @if (forecasts == null)
-    {
-        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-    }
-    else
-    {
-        <MudTable Items="forecasts" Hover="true" SortLabel="Sort By" Elevation="0">
-            <HeaderContent>
-                <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x => x.Date)">Date</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.Summary)">Summary</MudTableSortLabel></MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Date">@context.Date.ToShortDateString()</MudTd>
-                <MudTd DataLabel="Temp. (C)">@context.TemperatureC</MudTd>
-                <MudTd DataLabel="Temp. (F)">@context.TemperatureF</MudTd>
-                <MudTd DataLabel="Summary">@context.Summary</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager PageSizeOptions="new int[] { 5, 10 }" />
-            </PagerContent>
-        </MudTable>
-    }
+    <MudTable Items="forecasts" Hover="true" Dense="dense" Striped="striped" Bordered="bordered" SortLabel="Sort By" Elevation="1" Loading="_processing">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x => x.Date)">Date</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.Summary)">Summary</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Date">@context.Date.ToShortDateString()</MudTd>
+            <MudTd DataLabel="Temp. (C)">@context.TemperatureC</MudTd>
+            <MudTd DataLabel="Temp. (F)">@context.TemperatureF</MudTd>
+            <MudTd DataLabel="Summary">@context.Summary</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 5, 10, 20 }" />
+        </PagerContent>
+    </MudTable>
+    <MudToolBar>
+        <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    </MudToolBar>
+
 </MudContainer>
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private IEnumerable<WeatherForecast> forecasts = new List<WeatherForecast>();
+    private bool dense;
+    private bool striped = true;
+    private bool bordered = true;
+    bool _processing;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
+        _processing = true;
 
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
+        var result = await _weatherForecastManager.GetForecastAsync();
+        await Task.Delay(3000);
+        if (result.Succeeded)
+        {
+            forecasts = result.Data;
+        }
 
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        _processing = false;
     }
 }

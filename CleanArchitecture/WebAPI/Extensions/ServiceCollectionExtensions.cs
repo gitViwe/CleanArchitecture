@@ -1,13 +1,20 @@
 ﻿using Core.Configuration;
 using Infrastructure;
+using Infrastructure.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shared.Constant.Application;
+using Shared.Constant.Message;
+using Shared.Constant.Permission;
+using Shared.Wrapper;
+using System.Net;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace WebAPI.Extensions
 {
@@ -61,7 +68,6 @@ namespace WebAPI.Extensions
             {
                 // specify default schema
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
@@ -70,6 +76,68 @@ namespace WebAPI.Extensions
                 options.SaveToken = true;
                 // set the parameters used to validate
                 options.TokenValidationParameters = tokenValidationParams;
+                // set JWT authorization events
+                options.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = c =>
+                    {
+                        // JWT token has expired
+                        if (c.Exception is SecurityTokenExpiredException)
+                        {
+                            c.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            c.Response.ContentType = MediaTypeNames.Application.Json;
+                            var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.ExpiredToken));
+                            return c.Response.WriteAsync(result);
+                        }
+                        // unhandled server error
+                        else
+                        {
+                            c.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            c.Response.ContentType = MediaTypeNames.Application.Json;
+                            var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.InternalServerError));
+                            return c.Response.WriteAsync(result);
+                        }
+                    },
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        if (!context.Response.HasStarted)
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            context.Response.ContentType = MediaTypeNames.Application.Json;
+                            var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.Unauthorized));
+                            return context.Response.WriteAsync(result);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        context.Response.ContentType = MediaTypeNames.Application.Json;
+                        var result = JsonSerializer.Serialize(Result.Fail(AuthorizationError.Forbidden));
+                        return context.Response.WriteAsync(result);
+                    },
+                };
+            });
+
+            // add authorization to apply policy
+            services.AddAuthorization(options =>
+            {
+                // get all permissions from static properties
+                foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
+                {
+                    // get property value
+                    var propertyValue = prop.GetValue(null);
+
+                    if (propertyValue is not null)
+                    {
+                        // add new permission policy
+                        options.AddPolicy(propertyValue.ToString(), policy => policy.RequireClaim(ApplicationClaimTypes.Permission, propertyValue.ToString())
+                               // add JWT Bearer authentication scheme to this policy
+                               .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme));
+                    }
+                }
             });
 
             return services;
@@ -87,7 +155,8 @@ namespace WebAPI.Extensions
                 // password requirements
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<APIDbContext>();
+            }).AddEntityFrameworkStores<APIDbContext>()
+            .AddDefaultTokenProviders();
 
             return services;
         }
@@ -124,7 +193,7 @@ namespace WebAPI.Extensions
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
                     Reference = new OpenApiReference
                     {
                         Type = ReferenceType.SecurityScheme,
@@ -172,7 +241,7 @@ namespace WebAPI.Extensions
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             // allow requests from this URL
-                            .WithOrigins(configuration[Configuration.ApplicationUrl].TrimEnd('/'));
+                            .WithOrigins(configuration[Configuration.ServerUrl].TrimEnd('/'), configuration[Configuration.ApplicationUrl].TrimEnd('/'));
                     });
             });
 
@@ -188,6 +257,18 @@ namespace WebAPI.Extensions
         {
             services.Configure<AppConfiguration>(configuration.GetSection(nameof(AppConfiguration)));
             services.Configure<MongoDBConfiguration>(configuration.GetSection(nameof(MongoDBConfiguration)));
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers Infrastructure services in dependency injection
+        /// </summary>
+        internal static IServiceCollection AddWebAPIServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<IClaimService, ClaimService>();
 
             return services;
         }

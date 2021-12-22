@@ -1,42 +1,59 @@
 ﻿@layout AuthLayout
 @page "/auth/login"
+@inject IAuthenticationManager _authenticationManager
 
-<MudForm>
-    <MudText Typo="Typo.h4" GutterBottom="true">Sign In</MudText>
+<EditForm Model="Model" OnValidSubmit="SubmitAsync">
 
-    <MudText>Don't have an account? <MudLink Href="/auth/register">Register</MudLink></MudText>
+    <DataAnnotationsValidator />
 
-    <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+    <MudText Typo="Typo.h4"
+             GutterBottom="true">
+        Sign In
+    </MudText>
 
-    <MudTextField @bind-Value="@Password" Label="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+    <MudText>
+        Don't have an account? <MudLink Href="/auth/register">Register</MudLink>
+    </MudText>
+
+    <MudTextField Label="Email Address"
+                  @bind-Value="Model.Email"
+                  For="@(() => Model.Email)"
+                  Variant="Variant.Outlined"
+                  Class="my-6" />
+
+    <MudTextField InputType="@_passwordInput" 
+                  Label="Password"
+                  @bind-Value="Model.Password"
+                  For="@(() => Model.Password)"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@_passwordInputIcon"
+                  OnAdornmentClick="TogglePasswordVisibility" />
 
     <div Class="d-flex justify-space-between align-center">
-        <MudCheckBox T="bool" Label="Remember me?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+        <MudCheckBox T="bool"
+                     Label="Remember me?"
+                     Color="Color.Primary"
+                     Class="ml-n1 my-3" />
     </div>
 
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="/" Size="Size.Large" FullWidth="true">Sign In</MudButton>
-</MudForm>
-
-@code {
-    string Password { get; set; }
-
-    bool PasswordVisibility;
-    InputType PasswordInput = InputType.Password;
-    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-
-    void TogglePasswordVisibility()
-    {
-        @if (PasswordVisibility)
+    <MudButton ButtonType="ButtonType.Submit" 
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               Size="Size.Large"
+               Disabled = "_processing"
+               FullWidth="true">
+        @if(_processing)
         {
-            PasswordVisibility = false;
-            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
-            PasswordInput = InputType.Password;
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+            <MudText Class="ms-2">Processing</MudText>
         }
         else
         {
-            PasswordVisibility = true;
-            PasswordInputIcon = Icons.Material.Filled.Visibility;
-            PasswordInput = InputType.Text;
+            <MudText>
+                Sign In
+            </MudText>
         }
-    }
-}
+    </MudButton>
+</EditForm>
+

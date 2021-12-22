@@ -1,15 +1,20 @@
+using Core.Response;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Constant.Permission;
+using Shared.Wrapper;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
 
         private readonly ILogger<WeatherForecastController> _logger;
 
@@ -19,15 +24,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [Authorize(Policy = Permissions.Forecast.View)]
+        public async Task<IActionResult> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var data = await Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
-            .ToArray();
+            .ToArray());
+
+            return Ok(Result<IEnumerable<WeatherForecast>>.Success(data));
         }
     }
 }
