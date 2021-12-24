@@ -86,5 +86,17 @@ namespace Client.Infrastructure.Manager.Authentication
 
             return Result.Fail(result.Messages);
         }
+
+        public async Task<IResult> Logout()
+        {
+            // remove stored tokens
+            await _localStorage.RemoveItemAsync(ClientStorage.Local.AuthToken);
+            await _localStorage.RemoveItemAsync(ClientStorage.Local.RefreshToken);
+
+            // update the authentication state
+            ((ClientStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+
+            return Result.Success();
+        }
     }
 }

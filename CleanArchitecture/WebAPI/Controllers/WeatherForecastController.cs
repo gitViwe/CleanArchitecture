@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         [Authorize(Policy = Permissions.Forecast.View)]
         public async Task<IActionResult> Get()
         {
-            var data = await Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var data = await Task.FromResult(Enumerable.Range(1, 25).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),

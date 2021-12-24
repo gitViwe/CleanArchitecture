@@ -28,13 +28,13 @@
         </MudTooltip>
         <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
             <ActivatorContent>
-                <MudAvatar Image="" />
+                <MudIconButton Icon="@Icons.Filled.AccountCircle" Color="Color.Inherit"/>
             </ActivatorContent>
             <ChildContent>
                 <_Avatar Class="mt-n2" UserName="Viwe Nkepu" UserRole="Software Developer" />
                 <MudDivider Class="mb-2" />
                 <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="#" Disabled="true" />
-                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="#" Disabled="true" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" OnClick="OnLogout" />
             </ChildContent>
         </MudMenu>
         <!-- NAVBAR LINKS END -->
@@ -76,5 +76,10 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    async Task OnLogout()
+    {
+        await _authenticationManager.Logout();
     }
 }

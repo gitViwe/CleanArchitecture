@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Constant.Permission;
 using Shared.Constant.Storage;
 using Shared.Utility;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 
 namespace Client.Infrastructure.Authentication
 {
     /// <summary>
-    /// This class provides information abou the athentication state of the current user. Inherits from <see cref="AuthenticationStateProvider"/>
+    /// This class provides information about the authentication state of the current user. Inherits from <see cref="AuthenticationStateProvider"/>
     /// </summary>
     public class ClientStateProvider : AuthenticationStateProvider
     {
@@ -71,7 +70,7 @@ namespace Client.Infrastructure.Authentication
             var authState = Task.FromResult(new AuthenticationState(anonymousUser));
 
             // update the authentication state
-            NotifyAuthenticationStateChanged(authState);
+            base.NotifyAuthenticationStateChanged(authState);
         }
 
         /// <summary>
@@ -83,7 +82,7 @@ namespace Client.Infrastructure.Authentication
             var authState = Task.FromResult(await GetAuthenticationStateAsync());
 
             // update the authentication state
-            NotifyAuthenticationStateChanged(authState);
+            base.NotifyAuthenticationStateChanged(authState);
         }
 
         private IEnumerable<Claim> GetClaimsFromJwt(string jwt)
@@ -91,7 +90,7 @@ namespace Client.Infrastructure.Authentication
             // instantiates the list of claims to return
             var output = new List<Claim>();
 
-            // seperate the token string
+            // separate the token string
             var payload = jwt.Split('.')[1];
 
             // get the byte array from the token string
@@ -123,7 +122,7 @@ namespace Client.Infrastructure.Authentication
                         output.Add(new Claim(ClaimTypes.Role, roles.ToString()));
                     }
 
-                    // removed roles from dictionary to prevent adding diplicates
+                    // removed roles from dictionary to prevent adding duplicates
                     claimsDictionary.Remove(ClaimTypes.Role);
                 }
 
@@ -147,7 +146,7 @@ namespace Client.Infrastructure.Authentication
                         output.Add(new Claim(ApplicationClaimTypes.Permission, permissions.ToString()));
                     }
 
-                    // removed permissions from dictionary to prevent adding diplicates
+                    // removed permissions from dictionary to prevent adding duplicates
                     claimsDictionary.Remove(ApplicationClaimTypes.Permission);
                 }
 
