@@ -12,10 +12,9 @@ namespace Client.Configuration
             // customize the theme palette
             Palette = new Palette()
             {
-                Primary = Colors.Blue.Darken1,
-                Secondary = Colors.DeepPurple.Accent2,
+                Primary = Colors.DeepPurple.Default,
                 Background = Colors.Grey.Lighten5,
-                AppbarBackground = Colors.Blue.Darken1,
+                AppbarBackground = Colors.DeepPurple.Default,
                 DrawerBackground = "#FFF",
                 DrawerText = "rgba(0,0,0, 0.7)",
                 Success = "#06d79c"

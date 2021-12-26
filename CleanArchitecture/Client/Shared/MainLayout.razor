@@ -9,16 +9,16 @@
     <MudAppBar Elevation="_themeManager.DrawerElevation">
         <!-- BRAND BREAKPOINTS START -->
         <MudHidden Breakpoint="Breakpoint.SmAndDown">
-            <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" />
+            <MudIcon Icon="@CustomIcons.ViweNkepu_sm" Color="Color.Inherit" Size="Size.Large" ViewBox="4 4 20 3" />
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
             <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.Xs">
-            <MudText Typo="Typo.h6" Class="ml-4">Blazor PWA</MudText>
+            <MudText Typo="Typo.h6" Class="ml-4">Blazor PWA Demo</MudText>
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-            <MudText Typo="Typo.subtitle2">Blazor PWA</MudText>
+            <MudText Typo="Typo.subtitle2">Blazor PWA Demo</MudText>
         </MudHidden>
         <MudSpacer />
         <!-- BRAND BREAKPOINTS END -->
@@ -28,7 +28,7 @@
         </MudTooltip>
         <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
             <ActivatorContent>
-                <MudIconButton Icon="@Icons.Filled.AccountCircle" Color="Color.Inherit"/>
+                <MudAvatar Color="Color.Tertiary">V</MudAvatar>
             </ActivatorContent>
             <ChildContent>
                 <_Avatar Class="mt-n2" UserName="Viwe Nkepu" UserRole="Software Developer" />

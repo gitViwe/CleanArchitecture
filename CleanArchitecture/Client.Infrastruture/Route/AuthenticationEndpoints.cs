@@ -14,5 +14,10 @@
         /// The end point to register
         /// </summary>
         public const string Register = "api/Authentication/Register";
+
+        /// <summary>
+        /// The end point to refresh tokens
+        /// </summary>
+        public const string RefreshToken = "api/Authentication/RefreshToken";
     }
 }
