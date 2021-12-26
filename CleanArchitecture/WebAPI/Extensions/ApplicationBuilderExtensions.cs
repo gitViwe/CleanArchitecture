@@ -12,16 +12,13 @@
             this IApplicationBuilder app,
             IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    // specify the swagger endpoint
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1.0");
-                    options.DisplayRequestDuration();
-                });
-            }
+                // specify the swagger endpoint
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1.0");
+                options.DisplayRequestDuration();
+            });
         }
     }
 }
