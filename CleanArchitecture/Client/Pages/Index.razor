@@ -1,26 +1,29 @@
 ﻿@page "/"
 @attribute [Authorize]
 
-<MudContainer Class="mt-5">
-    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Progressive Web Application</MudText>
-    <MudText Align="Align.Center">This is a demo blazor application to showcase interfacing with an API.</MudText>
+<MudContainer>
 
-    <MudGrid Class="mt-4">
-        <MudItem xs="12">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            
-            </MudPaper>
+    <MudGrid>
+
+        <MudItem xs="12" sm="12" md="12">
+            <div class="d-flex justify-center mt-4">
+                <MudIcon Icon="@CustomIcons.ViweNkepu" Color="Color.Primary" Size="Size.Large" ViewBox="0 0 650 400" Style="width: 380px; height: 250px;" />
+            </div>
         </MudItem>
-        <MudItem xs="6">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            
-            </MudPaper>
+
+        <MudItem xs="12" sm="12" md="12">
+            <MudText Align="Align.Center" Typo="Typo.h2">Blazor PWA Demo</MudText>
+            <MudText Align="Align.Center" Typo="Typo.h5" Class="smaller">This is a demo Blazor Application to showcase Clean Architecture and interfacing with an API.</MudText>
         </MudItem>
-        <MudItem xs="6">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            
-            </MudPaper>
+
+        <MudItem xs="12" sm="12" md="12">
+            <div class="pa-4 justify-center my-4 mud-text-align-center">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="https://mudblazor.com/" Target="_blank" >MudBlazor UI</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" Link="https://dotnet.microsoft.com/apps/aspnet/apis" Target="_blank" >Web API Integration</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Link="https://devblogs.microsoft.com/dotnet/announcing-net-6/" Target="_blank" >Built with .NET 6</MudButton>
+            </div>
         </MudItem>
+
     </MudGrid>
 
 </MudContainer>

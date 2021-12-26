@@ -86,5 +86,61 @@ namespace Client.Infrastructure.Manager.Authentication
 
             return Result.Fail(result.Messages);
         }
+
+        public async Task<IResult> Logout()
+        {
+            // remove stored tokens
+            await _localStorage.RemoveItemAsync(ClientStorage.Local.AuthToken);
+            await _localStorage.RemoveItemAsync(ClientStorage.Local.RefreshToken);
+
+            // update the authentication state
+            ((ClientStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+
+            return Result.Success();
+        }
+
+        public async Task<IResult> RefreshToken()
+        {
+            // get tokens from client storage
+            var token = await _localStorage.GetItemAsync<string>(ClientStorage.Local.AuthToken);
+            var refreshToken = await _localStorage.GetItemAsync<string>(ClientStorage.Local.RefreshToken);
+
+            // TODO: Implement a login with return URL
+            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(refreshToken))
+            {
+               return await Logout();
+            }
+
+            // create model for API request
+            var request = new TokenRequest()
+            {
+                Token = token,
+                RefreshToken = refreshToken
+            };
+
+            // make a get request to the API end point
+            var response = await _httpClient.PostAsJsonAsync(Route.AuthenticationEndpoints.RefreshToken, request);
+
+            // process the response into a 'Result' object
+            var result = await response.ToResult<AuthenticationResponse>();
+
+            if (result.Succeeded)
+            {
+                // get tokens from response data
+                token = result.Data.Token;
+                refreshToken = result.Data.RefreshToken;
+
+                // store tokens on the client side
+                await _localStorage.SetItemAsync(ClientStorage.Local.AuthToken, token);
+                await _localStorage.SetItemAsync(ClientStorage.Local.RefreshToken, refreshToken);
+
+                // update the authentication state
+                await ((ClientStateProvider)_authenticationStateProvider).StateChangedAsync();
+
+                return Result.Success("Token refreshed.");
+            }
+
+            return Result.Fail(result.Messages);
+        }
     }
 }

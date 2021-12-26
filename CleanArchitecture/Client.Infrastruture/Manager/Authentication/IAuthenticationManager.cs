@@ -23,6 +23,18 @@ namespace Client.Infrastructure.Manager.Authentication
         Task<IResult> Login(LoginRequest request);
 
         /// <summary>
+        /// Clears all credentials on the client
+        /// </summary>
+        /// <returns>A success flag</returns>
+        Task<IResult> Logout();
+
+        /// <summary>
+        /// Attempts to get a new JWT token
+        /// </summary>
+        /// <returns>A response message</returns>
+        Task<IResult> RefreshToken();
+
+        /// <summary>
         /// Send a registration request to the API
         /// </summary>
         /// <param name="request">The user details required for registration</param>

@@ -44,8 +44,7 @@ namespace Client.Pages.Auth
 
             if (state.User.Identity.IsAuthenticated)
             {
-                // redirect user to the home page
-                _navigationManager.NavigateTo("/");
+                // TODO: redirect user ?
                 _snackBar.Add("You are already logged in.", Severity.Success);
             }
         }

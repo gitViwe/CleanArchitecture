@@ -183,7 +183,7 @@ namespace Infrastructure.Service
                 IsRevoked = false,
                 UserId = user.Id,
                 AddedDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddMonths(1),
+                ExpiryDate = DateTime.UtcNow.AddDays(1),
                 Token = Conversion.RandomString(35) + Guid.NewGuid()
             };
             // save the refresh token entity in the database
@@ -205,7 +205,9 @@ namespace Infrastructure.Service
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                // use First name and Last name, if it is empty, then use User name
+                new Claim(ClaimTypes.Name, string.IsNullOrWhiteSpace(user.FirstName + user.LastName) ? user.UserName : user.FirstName + " " + user.LastName)
             };
 
             // get claims that are assigned to the user...
