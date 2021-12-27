@@ -1,8 +1,10 @@
 ﻿using Client.Infrastructure.Authentication;
 using Client.Infrastructure.Manager.Authentication;
 using Client.Infrastructure.Manager.Forecast;
+using Client.Infrastructure.Manager.Interceptor;
 using Client.Infrastructure.Service;
 using Microsoft.AspNetCore.Components.Authorization;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Client.Extensions
 {
@@ -49,14 +51,17 @@ namespace Client.Extensions
             // register manager services
             services.AddTransient<IWeatherForecastManager, WeatherForecastManager>();
             services.AddTransient<IAuthenticationManager, AuthenticationManager>();
+            services.AddTransient<IHttpInterceptorManager, HttpInterceptorManager>();
 
             // add a named HTTP client and handler
-            services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("PWA.Client"))
+            services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("PWA.Client").EnableIntercept(sp))
                 .AddHttpClient("PWA.Client", client =>
                 {
                     client.BaseAddress = new Uri(configuration["AppConfiguration:ServerUrl"].TrimEnd('/'));
                 })
                 .AddHttpMessageHandler<ClientAuthenticationHeader>();
+
+            services.AddHttpClientInterceptor();
 
             return services;
         }

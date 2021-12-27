@@ -8,7 +8,7 @@
         /// <summary>
         /// Token has expired
         /// </summary>
-        public const string ExpiredToken = "The Token is expired.";
+        public const string ExpiredToken = "The Token has expired.";
 
         /// <summary>
         /// Not authorized to access

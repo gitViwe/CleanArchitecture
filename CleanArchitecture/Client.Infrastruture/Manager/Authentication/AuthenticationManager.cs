@@ -27,19 +27,19 @@ namespace Client.Infrastructure.Manager.Authentication
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        public async Task<ClaimsPrincipal> CurrentUser()
+        public async Task<ClaimsPrincipal> CurrentUserAsync()
         {
             var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
             return state.User;
         }
 
-        public async Task<IResult> Login(LoginRequest request)
+        public async Task<IResult> LoginAsync(LoginRequest request)
         {
             // make a get request to the API end point
             var response = await _httpClient.PostAsJsonAsync(Route.AuthenticationEndpoints.Login, request);
 
             // process the response into a 'Result' object
-            var result = await response.ToResult<AuthenticationResponse>();
+            var result = await response.ToResultAsync<AuthenticationResponse>();
 
             if (result.Succeeded)
             {
@@ -60,13 +60,13 @@ namespace Client.Infrastructure.Manager.Authentication
             return Result.Fail(result.Messages);
         }
 
-        public async Task<IResult> Register(RegistrationRequest request)
+        public async Task<IResult> RegisterAsync(RegistrationRequest request)
         {
             // make a get request to the API end point
             var response = await _httpClient.PostAsJsonAsync(Route.AuthenticationEndpoints.Register, request);
 
             // process the response into a 'Result' object
-            var result = await response.ToResult<AuthenticationResponse>();
+            var result = await response.ToResultAsync<AuthenticationResponse>();
 
             if (result.Succeeded)
             {
@@ -87,7 +87,7 @@ namespace Client.Infrastructure.Manager.Authentication
             return Result.Fail(result.Messages);
         }
 
-        public async Task<IResult> Logout()
+        public async Task LogoutAsync()
         {
             // remove stored tokens
             await _localStorage.RemoveItemAsync(ClientStorage.Local.AuthToken);
@@ -95,21 +95,13 @@ namespace Client.Infrastructure.Manager.Authentication
 
             // update the authentication state
             ((ClientStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
-
-            return Result.Success();
         }
 
-        public async Task<IResult> RefreshToken()
+        public async Task<IResult> RefreshTokenAsync()
         {
             // get tokens from client storage
             var token = await _localStorage.GetItemAsync<string>(ClientStorage.Local.AuthToken);
             var refreshToken = await _localStorage.GetItemAsync<string>(ClientStorage.Local.RefreshToken);
-
-            // TODO: Implement a login with return URL
-            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(refreshToken))
-            {
-               return await Logout();
-            }
 
             // create model for API request
             var request = new TokenRequest()
@@ -122,7 +114,7 @@ namespace Client.Infrastructure.Manager.Authentication
             var response = await _httpClient.PostAsJsonAsync(Route.AuthenticationEndpoints.RefreshToken, request);
 
             // process the response into a 'Result' object
-            var result = await response.ToResult<AuthenticationResponse>();
+            var result = await response.ToResultAsync<AuthenticationResponse>();
 
             if (result.Succeeded)
             {
@@ -137,7 +129,7 @@ namespace Client.Infrastructure.Manager.Authentication
                 // update the authentication state
                 await ((ClientStateProvider)_authenticationStateProvider).StateChangedAsync();
 
-                return Result.Success("Token refreshed.");
+                return Result.Success(token);
             }
 
             return Result.Fail(result.Messages);

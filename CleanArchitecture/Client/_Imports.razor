@@ -22,6 +22,7 @@
 @using Client.Infrastructure.Authentication
 @using Client.Infrastructure.Manager.Forecast
 @using Client.Infrastructure.Manager.Authentication
+@using Client.Infrastructure.Manager.Interceptor
 
 @*Add references to pages*@
 @using Client.Pages.Auth
@@ -31,3 +32,4 @@
 @inject ClientStateProvider _authenticationState
 @inject ISnackbar _snackBar
 @inject IAuthenticationManager _authenticationManager
+@inject IHttpInterceptorManager _interceptorManager

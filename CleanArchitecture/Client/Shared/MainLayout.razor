@@ -5,6 +5,8 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+<PageTitle>Viwe Nkepu</PageTitle>
+
 <MudLayout>
     <MudAppBar Elevation="_themeManager.DrawerElevation">
         <!-- BRAND BREAKPOINTS START -->
@@ -80,6 +82,6 @@
 
     async Task OnLogout()
     {
-        await _authenticationManager.Logout();
+        await _authenticationManager.LogoutAsync();
     }
 }

@@ -58,7 +58,7 @@ namespace Client.Pages.Auth
             _processing = true;
 
             // attempt login
-            var result = await _authenticationManager.Login(Model);
+            var result = await _authenticationManager.LoginAsync(Model);
 
             if (result.Succeeded == false)
             {

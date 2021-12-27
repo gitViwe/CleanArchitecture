@@ -8,20 +8,15 @@
         /// <summary>
         /// Configure the application to use Open API / Swagger UI
         /// </summary>
-        internal static void UseWebAPISwagger(
-            this IApplicationBuilder app,
-            IWebHostEnvironment env)
+        internal static void UseWebAPISwagger(this IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    // specify the swagger endpoint
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1.0");
-                    options.DisplayRequestDuration();
-                });
-            }
+                // specify the swagger endpoint
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1.0");
+                options.DisplayRequestDuration();
+            });
         }
     }
 }
