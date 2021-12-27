@@ -1,4 +1,4 @@
-﻿using Core.Request;
+﻿using Core.Request.Identity;
 using Microsoft.AspNetCore.Identity;
 using Shared.Constant.Message;
 using Shared.Wrapper;

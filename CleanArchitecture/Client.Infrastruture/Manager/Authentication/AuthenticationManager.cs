@@ -1,7 +1,7 @@
 ﻿using Client.Infrastructure.Authentication;
 using Client.Infrastructure.Extensions;
 using Client.Infrastructure.Service;
-using Core.Request;
+using Core.Request.Identity;
 using Core.Response;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Constant.Storage;

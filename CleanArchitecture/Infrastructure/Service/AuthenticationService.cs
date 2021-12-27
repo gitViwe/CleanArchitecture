@@ -1,5 +1,5 @@
 ﻿using Core.Configuration;
-using Core.Request;
+using Core.Request.Identity;
 using Core.Response;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
