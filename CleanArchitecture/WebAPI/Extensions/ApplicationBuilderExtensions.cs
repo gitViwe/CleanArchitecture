@@ -8,9 +8,7 @@
         /// <summary>
         /// Configure the application to use Open API / Swagger UI
         /// </summary>
-        internal static void UseWebAPISwagger(
-            this IApplicationBuilder app,
-            IWebHostEnvironment env)
+        internal static void UseWebAPISwagger(this IApplicationBuilder app)
         {
             app.UseSwagger();
             app.UseSwaggerUI(options =>

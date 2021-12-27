@@ -85,7 +85,7 @@ namespace Client.Infrastructure.Authentication
             base.NotifyAuthenticationStateChanged(authState);
         }
 
-        private IEnumerable<Claim> GetClaimsFromJwt(string jwt)
+        private static IEnumerable<Claim> GetClaimsFromJwt(string jwt)
         {
             // instantiates the list of claims to return
             var output = new List<Claim>();

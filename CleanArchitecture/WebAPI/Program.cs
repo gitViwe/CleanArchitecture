@@ -19,7 +19,7 @@ builder.Services.AddWebAPICors(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseWebAPISwagger(app.Environment);
+app.UseWebAPISwagger();
 
 app.UseHttpsRedirection();
 

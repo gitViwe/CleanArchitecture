@@ -12,7 +12,7 @@ namespace Client.Infrastructure.Extensions
         /// <typeparam name="TModel">The data type returned from the response</typeparam>
         /// <param name="response">The HTTP response message from the API</param>
         /// <returns>An HTTP response message as a <see cref="Result"/> model</returns>
-        internal static async Task<IResult<TModel>> ToResult<TModel>(this HttpResponseMessage response)
+        internal static async Task<IResult<TModel>> ToResultAsync<TModel>(this HttpResponseMessage response)
         {
             // get the response as a string
             var responseAsString = await response.Content.ReadAsStringAsync();
@@ -33,7 +33,7 @@ namespace Client.Infrastructure.Extensions
         /// </summary>
         /// <param name="response">The HTTP response message from the API</param>
         /// <returns>An HTTP response message as a <see cref="Result"/> model</returns>
-        internal static async Task<IResult> ToResult(this HttpResponseMessage response)
+        internal static async Task<IResult> ToResultAsync(this HttpResponseMessage response)
         {
             // get the response as a string
             var responseAsString = await response.Content.ReadAsStringAsync();

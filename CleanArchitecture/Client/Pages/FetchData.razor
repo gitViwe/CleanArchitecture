@@ -36,33 +36,3 @@
     </MudPaper>
 
 </MudContainer>
-
-@code {
-    private IEnumerable<WeatherForecast> forecasts = new List<WeatherForecast>();
-    private bool dense = true;
-    private bool striped = true;
-    private bool bordered = true;
-    bool _processing;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _processing = true;
-
-        var result = await _weatherForecastManager.GetForecastAsync();
-
-        await Task.Delay(1500);
-
-        if (result.Succeeded)
-        {
-            forecasts = result.Data;
-        }
-        else
-        {
-            foreach (var message in result.Messages)
-            {
-                _snackBar.Add(message, Severity.Warning);
-            }
-        }
-        _processing = false;
-    }
-}
