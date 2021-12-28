@@ -269,6 +269,7 @@ namespace WebAPI.Extensions
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddScoped<IClaimService, ClaimService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             return services;
         }

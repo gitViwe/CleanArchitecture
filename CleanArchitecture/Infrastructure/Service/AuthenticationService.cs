@@ -168,7 +168,7 @@ namespace Infrastructure.Service
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             // creates a security token
@@ -183,7 +183,7 @@ namespace Infrastructure.Service
                 IsRevoked = false,
                 UserId = user.Id,
                 AddedDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddDays(1),
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
                 Token = Conversion.RandomString(35) + Guid.NewGuid()
             };
             // save the refresh token entity in the database
