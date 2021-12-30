@@ -1,4 +1,4 @@
-﻿using Core.Request;
+﻿using Core.Request.Identity;
 using Infrastructure;
 using Infrastructure.Service;
 using Microsoft.AspNetCore.Identity;

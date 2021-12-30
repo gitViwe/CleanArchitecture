@@ -1,15 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Request
+namespace Core.Request.Identity
 {
     /// <summary>
     /// Data Transfer Object for the claims request
     /// </summary>
-    public class UserClaimRequest
+    public class RoleClaimRequest
     {
-        [Required,
-            EmailAddress(ErrorMessage = "Please enter a valid email address.")]
-        public string Email { get; set; }
+        [Required]
+        public string RoleName { get; set; }
 
         [Required]
         public string ClaimName { get; set; }

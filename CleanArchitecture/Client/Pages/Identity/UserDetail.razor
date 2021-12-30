@@ -1,0 +1,85 @@
+﻿
+<MudGrid>
+
+    <MudItem xs="12" sm="4" md="3">
+        <AccountAvatar />
+    </MudItem>
+
+    <MudItem xs="12" sm="8" md="9">
+        <EditForm Model=Model OnValidSubmit="SubmitAsync">
+
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="25">
+
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>User Detail</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <MudGrid>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="First Name"
+                                          For="@(() => Model.FirstName)"
+                                          @bind-Value="@Model.FirstName"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Last Name"
+                                          For="@(() => Model.LastName)"
+                                          @bind-Value="@Model.LastName"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Phone number"
+                                          For="@(() => Model.PhoneNumber)"
+                                          @bind-Value="@Model.PhoneNumber"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Email Address"
+                                          @bind-Value="Email"
+                                          For="@(() => Email)"
+                                          Variant="Variant.Outlined"
+                                          Disabled="true" />
+                        </MudItem>
+
+                    </MudGrid>
+                </MudCardContent>
+
+                <MudCardActions Class="pb-4 pl-4">
+                    <MudButton ButtonType="ButtonType.Submit" 
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Disabled = "_processing"
+                               FullWidth="true">
+                        @if(_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>
+                                Update
+                            </MudText>
+                        }
+                    </MudButton>
+                </MudCardActions>
+
+            </MudCard>
+        </EditForm>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+
+}

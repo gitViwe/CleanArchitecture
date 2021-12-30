@@ -13,7 +13,7 @@ builder.Services.AddWebAPIIdentity();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddWebAPISwagger();
+builder.Services.AddWebAPISwagger(builder.Configuration);
 builder.Services.AddWebAPICors(builder.Configuration);
 
 var app = builder.Build();

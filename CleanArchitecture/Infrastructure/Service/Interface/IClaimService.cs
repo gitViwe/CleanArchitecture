@@ -1,4 +1,4 @@
-﻿using Core.Request;
+﻿using Core.Request.Identity;
 using Shared.Wrapper;
 
 namespace Infrastructure.Service

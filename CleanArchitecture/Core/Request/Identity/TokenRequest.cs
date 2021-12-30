@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Request
+namespace Core.Request.Identity
 {
     public class TokenRequest
     {

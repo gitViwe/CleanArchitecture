@@ -164,7 +164,9 @@ namespace WebAPI.Extensions
         /// <summary>
         /// Registers Open API / Swagger for the application
         /// </summary>
-        internal static IServiceCollection AddWebAPISwagger(this IServiceCollection services)
+        internal static IServiceCollection AddWebAPISwagger(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddSwaggerGen(options =>
             {
@@ -172,12 +174,13 @@ namespace WebAPI.Extensions
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "WebAPI",
-                    Description = "A .NET 6 web API demo project to showcase clean architecture",
+                    Description = "A .NET 6 Web API demo project to showcase Clean Architecture and Swagger / Open API documentation",
                     Version = "v1.0",
                     Contact = new OpenApiContact()
                     {
                         Name = "Viwe Nkepu",
-                        Email = "viwe.nkepu@hotmail.com"
+                        Email = "viwe.nkepu@hotmail.com",
+                        Url = new Uri(configuration[Configuration.ApplicationUrl].TrimEnd('/'))
                     },
                     License = new OpenApiLicense
                     {
@@ -269,6 +272,7 @@ namespace WebAPI.Extensions
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddScoped<IClaimService, ClaimService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             return services;
         }

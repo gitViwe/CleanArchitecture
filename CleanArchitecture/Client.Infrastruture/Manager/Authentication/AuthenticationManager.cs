@@ -1,7 +1,7 @@
 ﻿using Client.Infrastructure.Authentication;
 using Client.Infrastructure.Extensions;
 using Client.Infrastructure.Service;
-using Core.Request;
+using Core.Request.Identity;
 using Core.Response;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Constant.Storage;
@@ -133,6 +133,13 @@ namespace Client.Infrastructure.Manager.Authentication
             }
 
             return Result.Fail(result.Messages);
+        }
+
+        public async Task<bool> TryRefreshTokenAsync()
+        {
+            var result = await RefreshTokenAsync();
+
+            return result.Succeeded;
         }
     }
 }

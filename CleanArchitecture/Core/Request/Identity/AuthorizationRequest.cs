@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Request
+namespace Core.Request.Identity
 {
     /// <summary>
     /// Data Transfer Object for the user - role request

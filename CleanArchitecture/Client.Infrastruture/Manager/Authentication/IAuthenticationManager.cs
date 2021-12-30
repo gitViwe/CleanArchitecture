@@ -1,4 +1,4 @@
-﻿using Core.Request;
+﻿using Core.Request.Identity;
 using Shared.Wrapper;
 using System.Security.Claims;
 
@@ -39,5 +39,11 @@ namespace Client.Infrastructure.Manager.Authentication
         /// <param name="request">The user details required for registration</param>
         /// <returns>The response message</returns>
         Task<IResult> RegisterAsync(RegistrationRequest request);
+
+        /// <summary>
+        /// Attempt to refresh the JWT token
+        /// </summary>
+        /// <returns>True if the result was successful</returns>
+        Task<bool> TryRefreshTokenAsync();
     }
 }

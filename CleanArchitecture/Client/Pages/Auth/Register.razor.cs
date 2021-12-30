@@ -1,4 +1,4 @@
-﻿using Core.Request;
+﻿using Core.Request.Identity;
 using MudBlazor;
 
 namespace Client.Pages.Auth

@@ -1,5 +1,5 @@
 ﻿using Core.Configuration;
-using Core.Request;
+using Core.Request.Identity;
 using Core.Response;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -183,7 +183,7 @@ namespace Infrastructure.Service
                 IsRevoked = false,
                 UserId = user.Id,
                 AddedDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddDays(1),
+                ExpiryDate = DateTime.UtcNow.AddDays(2),
                 Token = Conversion.RandomString(35) + Guid.NewGuid()
             };
             // save the refresh token entity in the database
@@ -206,8 +206,9 @@ namespace Infrastructure.Service
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                // use First name and Last name, if it is empty, then use User name
-                new Claim(ClaimTypes.Name, string.IsNullOrWhiteSpace(user.FirstName + user.LastName) ? user.UserName : user.FirstName + " " + user.LastName)
+                new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName ?? ""),
+                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName ?? ""),
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? "")
             };
 
             // get claims that are assigned to the user...
