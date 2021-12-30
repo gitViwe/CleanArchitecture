@@ -1,5 +1,7 @@
 ﻿using Core.Request.Identity;
 using Infrastructure.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Wrapper;
 using System.Net.Mime;
@@ -14,6 +16,7 @@ namespace WebAPI.Controllers
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

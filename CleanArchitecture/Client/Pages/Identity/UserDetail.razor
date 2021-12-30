@@ -1,0 +1,119 @@
+﻿
+<MudGrid>
+
+    <MudItem xs="12" sm="4" md="3">
+        <MudCard Elevation="25">
+            <MudCardContent>
+
+                <div class="d-flex justify-center mb-4">
+                    <MudAvatar Color="Color.Tertiary" Style="height:250px; width:250px;">V</MudAvatar>
+                </div>
+                <MudText Typo="Typo.h6" Align="Align.Center">Viwe Nkepu</MudText>
+                <MudText Align="Align.Center">Email</MudText>
+
+            </MudCardContent>
+
+            <MudCardActions Class="d-flex justify-center">
+
+                <InputFile id="fileInput" hidden />
+
+                <MudButton HtmlTag="label"
+                            Variant="Variant.Text"
+                            Color="Color.Primary"
+                            Size="Size.Small"
+                            StartIcon="@Icons.Filled.CloudUpload"
+                            for="fileInput"
+                            Disabled=true>
+                    Upload Image
+                </MudButton>
+
+                <MudButton Variant="Variant.Text"
+                            Color="Color.Error"
+                            StartIcon="@Icons.Filled.Delete"
+                            Size="Size.Small"
+                            Disabled=true>
+                    Delete Image
+                </MudButton>
+
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="8" md="9">
+        <EditForm Model=Model OnValidSubmit="SubmitAsync">
+
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="25">
+
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>User Profile</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <MudGrid>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="First Name"
+                                          For="@(() => Model.FirstName)"
+                                          @bind-Value="@Model.FirstName"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Last Name"
+                                          For="@(() => Model.LastName)"
+                                          @bind-Value="@Model.LastName"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Phone number"
+                                          For="@(() => Model.PhoneNumber)"
+                                          @bind-Value="@Model.PhoneNumber"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Email Address"
+                                          @bind-Value="Email"
+                                          For="@(() => Email)"
+                                          Variant="Variant.Outlined"
+                                          Disabled="true" />
+                        </MudItem>
+
+                    </MudGrid>
+                </MudCardContent>
+
+                <MudCardActions Class="pb-4 pl-4">
+                    <MudButton ButtonType="ButtonType.Submit" 
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Disabled = "_processing"
+                               FullWidth="true">
+                        @if(_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>
+                                Update
+                            </MudText>
+                        }
+                    </MudButton>
+                </MudCardActions>
+
+            </MudCard>
+        </EditForm>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+
+}

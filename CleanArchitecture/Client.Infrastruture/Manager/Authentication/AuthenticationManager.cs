@@ -134,5 +134,12 @@ namespace Client.Infrastructure.Manager.Authentication
 
             return Result.Fail(result.Messages);
         }
+
+        public async Task<bool> TryRefreshTokenAsync()
+        {
+            var result = await RefreshTokenAsync();
+
+            return result.Succeeded;
+        }
     }
 }

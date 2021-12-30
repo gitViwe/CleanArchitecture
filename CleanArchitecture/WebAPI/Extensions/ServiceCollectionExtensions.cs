@@ -172,12 +172,13 @@ namespace WebAPI.Extensions
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "WebAPI",
-                    Description = "A .NET 6 web API demo project to showcase clean architecture",
+                    Description = "A .NET 6 Web API demo project to showcase Clean Architecture and Swagger / Open API documentation",
                     Version = "v1.0",
                     Contact = new OpenApiContact()
                     {
                         Name = "Viwe Nkepu",
-                        Email = "viwe.nkepu@hotmail.com"
+                        Email = "viwe.nkepu@hotmail.com",
+                        Url = new Uri("https://kind-sky-079a50603.azurestaticapps.net/")
                     },
                     License = new OpenApiLicense
                     {

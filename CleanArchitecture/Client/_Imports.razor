@@ -16,13 +16,18 @@
 
 @using Core.Response
 
+@using Core.Request.Identity
+
 @using Client
 @using Client.Shared
 @using Client.Configuration
+
 @using Client.Infrastructure.Authentication
+
 @using Client.Infrastructure.Manager.Forecast
 @using Client.Infrastructure.Manager.Authentication
 @using Client.Infrastructure.Manager.Interceptor
+@using Client.Infrastructure.Manager.Account
 
 @*Add references to pages*@
 @using Client.Pages.Auth
@@ -33,3 +38,4 @@
 @inject ISnackbar _snackBar
 @inject IAuthenticationManager _authenticationManager
 @inject IHttpInterceptorManager _interceptorManager
+@inject IAccountManager _accountManager

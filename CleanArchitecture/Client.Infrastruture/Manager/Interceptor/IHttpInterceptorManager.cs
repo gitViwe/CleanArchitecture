@@ -2,6 +2,9 @@
 
 namespace Client.Infrastructure.Manager.Interceptor
 {
+    /// <summary>
+    /// Intercepts HTTP requests to attempt a token refresh
+    /// </summary>
     public interface IHttpInterceptorManager
     {
         /// <summary>
