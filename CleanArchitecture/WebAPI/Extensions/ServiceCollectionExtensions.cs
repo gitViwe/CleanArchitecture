@@ -164,7 +164,9 @@ namespace WebAPI.Extensions
         /// <summary>
         /// Registers Open API / Swagger for the application
         /// </summary>
-        internal static IServiceCollection AddWebAPISwagger(this IServiceCollection services)
+        internal static IServiceCollection AddWebAPISwagger(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddSwaggerGen(options =>
             {
@@ -178,7 +180,7 @@ namespace WebAPI.Extensions
                     {
                         Name = "Viwe Nkepu",
                         Email = "viwe.nkepu@hotmail.com",
-                        Url = new Uri("https://kind-sky-079a50603.azurestaticapps.net/")
+                        Url = new Uri(configuration[Configuration.ApplicationUrl].TrimEnd('/'))
                     },
                     License = new OpenApiLicense
                     {

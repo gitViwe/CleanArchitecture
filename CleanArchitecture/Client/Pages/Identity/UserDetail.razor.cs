@@ -32,7 +32,6 @@ namespace Client.Pages.Identity
         /// <summary>
         /// Processes a profile update attempt when form validation passes
         /// </summary>
-        /// <returns></returns>
         private async Task SubmitAsync()
         {
             _processing = true;

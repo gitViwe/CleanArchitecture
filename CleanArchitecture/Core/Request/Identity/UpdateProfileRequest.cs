@@ -7,10 +7,12 @@ namespace Core.Request.Identity
     /// </summary>
     public class UpdateProfileRequest
     {
-        [Required]
+        [Required,
+            Display(Name = "First Name")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required,
+            Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         public string PhoneNumber { get; set; }
