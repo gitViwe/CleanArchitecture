@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Authors>Viwe Nkepu</Authors>
+    <Description>The Application Core holds the business model, which includes entities, services, and interfaces.
+These can be defined as simple Data Transfer Objects (DTOs).</Description>
   </PropertyGroup>
 
 </Project>
