@@ -35,7 +35,7 @@
             <ChildContent>
                 <_Avatar Class="mt-n2" UserName="Viwe Nkepu" UserRole="Software Developer" />
                 <MudDivider Class="mb-2" />
-                <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="#" Disabled="true" />
+                <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="/account" />
                 <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" OnClick="OnLogout" />
             </ChildContent>
         </MudMenu>
@@ -57,31 +57,3 @@
         </MudContainer>
     </MudMainContent>
 </MudLayout>
-
-@code {
-
-    // set custom theme defaults
-    private ThemeManagerTheme _themeManager = new ThemeManagerTheme
-    {
-        Theme = new DefaultTheme(),
-        DrawerClipMode = DrawerClipMode.Always,
-        FontFamily = "Montserrat",
-        DefaultBorderRadius = 6,
-        AppBarElevation = 1,
-        DrawerElevation = 1
-    };
-
-    // specifies the state of the side bar
-    bool _drawerOpen = true;
-
-    // toggles the state of the side bar
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    async Task OnLogout()
-    {
-        await _authenticationManager.LogoutAsync();
-    }
-}

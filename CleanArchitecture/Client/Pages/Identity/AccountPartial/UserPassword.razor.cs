@@ -1,7 +1,7 @@
 ﻿using Core.Request.Identity;
 using MudBlazor;
 
-namespace Client.Pages.Identity
+namespace Client.Pages.Identity.AccountPartial
 {
     public partial class UserPassword
     {

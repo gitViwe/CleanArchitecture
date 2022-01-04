@@ -10,10 +10,10 @@
   <p align="center">
     .NET Project using clean architecture
     <br />
-    <a href="https://github.com/gitViwe/CleanArchitecture"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/gitViwe/CleanArchitecture">View Demo</a>
+    <a href="https://kind-sky-079a50603.azurestaticapps.net/">View Demo</a>
     ·
     <a href="https://github.com/gitViwe/CleanArchitecture/issues">Report Bug</a>
     ·
@@ -119,15 +119,22 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] SwaggerUI
     - [x] JWT authentication
     - [x] Permission based authorization
-    - [ ] Extend IdentityUser
+    - [x] Extend IdentityUser
     - [ ] Hangfire
     - [ ] Emailer
+    - [ ] Account - Confirm Email
+    - [ ] Account - Forgot Password
+    - [ ] File Upload
 - Blazor Web Assembly:
     - [x] Progressive Web Aapplication
     - [x] MudBlazor UI
     - [x] Local Storage
     - [x] Authorization & Authentication
-    - [ ] User Account Management
+    - [x] User Account Management
+    - [ ] Role Management
+    - [ ] Role Permission Management
+    - [ ] User Role Management
+    - [ ] User Permission Management
     - [ ] SignalR Integration
 - Data:
     - [ ] Repository pattern

@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a collection of all roles</response>
         [HttpGet]
         [Route(nameof(GetRoles))]
-        [ProducesResponseType(typeof(Result<List<IdentityRole>>), 200)]
+        [ProducesResponseType(typeof(Result<IEnumerable<IdentityRole>>), 200)]
         public async Task<IActionResult> GetRoles()
         {
             return Ok(await _authorizationService.GetRolesAsync());

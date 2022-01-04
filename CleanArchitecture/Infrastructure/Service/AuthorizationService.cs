@@ -22,7 +22,7 @@ namespace Infrastructure.Service
         public async Task<IResult> GetRolesAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            return Result<List<IdentityRole>>.Success(roles);
+            return Result<IEnumerable<IdentityRole>>.Success(roles);
         }
 
         public async Task<IResult> CreateRoleAsync(string roleName)
