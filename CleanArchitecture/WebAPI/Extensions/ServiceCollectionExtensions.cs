@@ -1,5 +1,6 @@
 ﻿using Core.Configuration;
 using Infrastructure;
+using Infrastructure.Identity;
 using Infrastructure.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -148,7 +149,7 @@ namespace WebAPI.Extensions
         /// </summary>
         internal static IServiceCollection AddWebAPIIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<AppIdentityUser, IdentityRole>(options =>
+            services.AddIdentity<AppIdentityUser, AppIdentityRole>(options =>
             {
                 // require account to sign in
                 options.SignIn.RequireConfirmedAccount = true;

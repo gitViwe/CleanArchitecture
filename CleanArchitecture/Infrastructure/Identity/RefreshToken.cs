@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Infrastructure
+namespace Infrastructure.Identity
 {
     /// <summary>
     /// Holds the information used to request a new JWT token

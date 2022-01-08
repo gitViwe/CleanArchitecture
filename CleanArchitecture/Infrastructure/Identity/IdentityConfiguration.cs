@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure
+namespace Infrastructure.Identity
 {
     /// <summary>
     /// Configuration for the ASP Net Core Identity entities

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Core.Response.Identity;
 using Shared.Wrapper;
 
 namespace Client.Infrastructure.Manager.Authorization
@@ -19,6 +19,6 @@ namespace Client.Infrastructure.Manager.Authorization
         /// Get all roles
         /// </summary>
         /// <returns>A list of the Identity roles</returns>
-        Task<IResult<IEnumerable<IdentityRole>>> GetAllAsync();
+        Task<IResult<IEnumerable<RoleResponse>>> GetAllAsync();
     }
 }

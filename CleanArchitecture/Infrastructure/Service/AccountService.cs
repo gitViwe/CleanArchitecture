@@ -1,4 +1,5 @@
 ﻿using Core.Request.Identity;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Shared.Wrapper;
 

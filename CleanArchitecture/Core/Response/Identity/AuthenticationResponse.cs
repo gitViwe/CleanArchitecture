@@ -1,4 +1,4 @@
-﻿namespace Core.Response
+﻿namespace Core.Response.Identity
 {
     /// <summary>
     /// Data Transfer Object for authentication responses

@@ -1,4 +1,6 @@
 ﻿using Core.Request.Identity;
+using Core.Response.Identity;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Constant.Message;
@@ -9,11 +11,11 @@ namespace Infrastructure.Service
     public class AuthorizationService : IAuthorizationService
     {
         private readonly UserManager<AppIdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
 
         public AuthorizationService(
             UserManager<AppIdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<AppIdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -22,18 +24,26 @@ namespace Infrastructure.Service
         public async Task<IResult> GetRolesAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            return Result<IEnumerable<IdentityRole>>.Success(roles);
-        }
 
-        public async Task<IResult> CreateRoleAsync(string roleName)
-        {
-            if (string.IsNullOrWhiteSpace(roleName))
+            // TODO: Add auto mapper
+            var output = new List<RoleResponse>();
+            foreach (var item in roles)
             {
-                return Result.Fail(ValidationError.Required(nameof(roleName)));
+                output.Add(new RoleResponse()
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Description = item.Description,
+                });
             }
 
+            return Result<IEnumerable<RoleResponse>>.Success(output);
+        }
+
+        public async Task<IResult> CreateRoleAsync(RoleRequest request)
+        {
             // check if the role already exists
-            var exists = await _roleManager.RoleExistsAsync(roleName);
+            var exists = await _roleManager.RoleExistsAsync(request.Name);
 
             if (exists)
             {
@@ -41,11 +51,11 @@ namespace Infrastructure.Service
             }
 
             // create new role
-            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            var result = await _roleManager.CreateAsync(new AppIdentityRole(request.Name, request.Description));
 
             if (result.Succeeded)
             {
-                return Result.Success($"The role: {roleName} has been created.");
+                return Result.Success($"The role: {request.Name} has been created.");
             }
 
             return Result.Fail("Could not create role. Please try again.");
@@ -57,7 +67,7 @@ namespace Infrastructure.Service
             return Result<List<AppIdentityUser>>.Success(users);
         }
 
-        public async Task<IResult> AddUserToRoleAsync(AuthorizationRequest request)
+        public async Task<IResult> AddUserToRoleAsync(RoleUserRequest request)
         {
             // check if the user exists
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -114,7 +124,7 @@ namespace Infrastructure.Service
             return Result<IList<string>>.Success(userRoles);
         }
 
-        public async Task<IResult> RemoveUserFromRoleAsync(AuthorizationRequest request)
+        public async Task<IResult> RemoveUserFromRoleAsync(RoleUserRequest request)
         {
             // check if the user exists
             var user = await _userManager.FindByEmailAsync(request.Email);

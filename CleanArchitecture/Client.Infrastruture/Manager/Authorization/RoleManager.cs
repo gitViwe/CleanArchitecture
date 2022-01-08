@@ -1,12 +1,7 @@
 ﻿using Client.Infrastructure.Extensions;
-using Core.Response;
+using Core.Response.Identity;
 using Shared.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 
 namespace Client.Infrastructure.Manager.Authorization
 {
@@ -19,13 +14,13 @@ namespace Client.Infrastructure.Manager.Authorization
             _httpClient = httpClient;
         }
 
-        public async Task<IResult<IEnumerable<IdentityRole>>> GetAllAsync()
+        public async Task<IResult<IEnumerable<RoleResponse>>> GetAllAsync()
         {
             // make a get request to the API end point
             var response = await _httpClient.GetAsync(Route.AuthorizationEndpoints.GetAllRoles);
 
             // process the response into a collection of 'IdentityRole' objects
-            return await response.ToResultAsync<IEnumerable<IdentityRole>>();
+            return await response.ToResultAsync<IEnumerable<RoleResponse>>();
         }
 
         public async Task<IResult> CreateAsync(string roleName)

@@ -64,7 +64,7 @@
 
 ### Built With
 
-* [.NET](https://devblogs.microsoft.com/dotnet/announcing-net-6/)
+* [.NET 6](https://devblogs.microsoft.com/dotnet/announcing-net-6/)
 * [ASP.NET Web API](https://dotnet.microsoft.com/apps/aspnet/apis)
 * [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
 * [MudBlazor](https://mudblazor.com/)

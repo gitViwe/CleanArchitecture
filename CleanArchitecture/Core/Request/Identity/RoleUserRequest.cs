@@ -5,7 +5,7 @@ namespace Core.Request.Identity
     /// <summary>
     /// Data Transfer Object for the user - role request
     /// </summary>
-    public class AuthorizationRequest
+    public class RoleUserRequest
     {
         [Required,
             EmailAddress(ErrorMessage = "Please enter a valid email address.")]

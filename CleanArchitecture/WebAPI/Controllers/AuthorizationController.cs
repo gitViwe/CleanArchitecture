@@ -1,5 +1,6 @@
 ﻿using Core.Request.Identity;
-using Infrastructure;
+using Core.Response.Identity;
+using Infrastructure.Identity;
 using Infrastructure.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a collection of all roles</response>
         [HttpGet]
         [Route(nameof(GetRoles))]
-        [ProducesResponseType(typeof(Result<IEnumerable<IdentityRole>>), 200)]
+        [ProducesResponseType(typeof(Result<IEnumerable<RoleResponse>>), 200)]
         public async Task<IActionResult> GetRoles()
         {
             return Ok(await _authorizationService.GetRolesAsync());
@@ -39,14 +40,19 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Use this endpoint to create a new role on the system
         /// </summary>
-        /// <param name="roleName">This is the name of the Identity Role to create</param>
+        /// <param name="request">This is the name and description of the Identity Role to create</param>
         /// <response code="200">Returns a success message</response>
         [HttpPost]
         [Route(nameof(CreateRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        public async Task<IActionResult> CreateRole(string roleName)
+        public async Task<IActionResult> CreateRole(RoleRequest request)
         {
-            return Ok(await _authorizationService.CreateRoleAsync(roleName));
+            if (ModelState.IsValid)
+            {
+                return Ok(await _authorizationService.CreateRoleAsync(request)); 
+            }
+
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
         }
 
         /// <summary>
@@ -69,7 +75,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route(nameof(AddUserToRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        public async Task<IActionResult> AddUserToRole([FromBody] AuthorizationRequest request)
+        public async Task<IActionResult> AddUserToRole([FromBody] RoleUserRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +106,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route(nameof(RemoveUserFromRole))]
         [ProducesResponseType(typeof(Result), 200)]
-        public async Task<IActionResult> RemoveUserFromRole([FromBody] AuthorizationRequest request)
+        public async Task<IActionResult> RemoveUserFromRole([FromBody] RoleUserRequest request)
         {
             if (ModelState.IsValid)
             {
