@@ -1,5 +1,5 @@
 ﻿using Core.Request.Identity;
-using Core.Response;
+using Core.Response.Identity;
 using Infrastructure.Service;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Wrapper;

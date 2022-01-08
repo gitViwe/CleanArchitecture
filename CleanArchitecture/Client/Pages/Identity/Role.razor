@@ -1,0 +1,86 @@
+﻿@page "/role"
+@attribute [Authorize]
+@inject IRoleManager _roleManager
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-5">
+
+    <MudText Typo="Typo.h3" GutterBottom="true">Manage Roles</MudText>
+    <MudText Class="mb-8">This component demonstrates interfacing with the API to manage application roles.</MudText>
+
+    <MudPaper Outlined="true" >
+        <MudTable Items="_roles" Hover="true" Dense="dense" Striped="striped" Bordered="bordered" SortLabel="Sort By" Elevation="0" Loading="_processing">
+
+            <ToolBarContent>
+                <div class="justify-center mud-text-align-center">
+
+                    <MudButton DisableElevation
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="true"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               IconColor="Color.Surface">
+                        Create
+                    </MudButton>
+                    <MudButton DisableElevation
+                               Variant="Variant.Filled"
+                               OnClick="GetRolesAsync"
+                               StartIcon="@Icons.Material.Filled.Refresh"
+                               IconColor="Color.Surface"
+                               Color="Color.Tertiary">
+                        Refresh
+                    </MudButton>
+                </div>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<RoleResponse, object>(x => x.Id)">Id</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<RoleResponse, object>(x => x.Name)">Role Name</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<RoleResponse, object>(x => x.Description)">Description</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align:right">Actions</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Id">@context.Id</MudTd>
+                <MudTd DataLabel="Role Name">@context.Name</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Actions" Style="text-align: right">
+
+                    <MudMenu Label="Actions"
+                             Variant="Variant.Filled"
+                             DisableElevation="true"
+                             EndIcon="@Icons.Filled.KeyboardArrowDown"
+                             IconColor="Color.Secondary"
+                             Direction="Direction.Left" OffsetX="true">
+
+                        <MudButton Variant="Variant.Filled"
+                               DisableElevation="true"
+                               StartIcon="@Icons.Material.Filled.DoNotTouch"
+                               IconColor="Color.Secondary"
+                               Size="Size.Small"
+                               Color="Color.Surface">
+                        No options yet
+                    </MudButton>
+
+                    </MudMenu>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] { 5, 10, 20 }" />
+            </PagerContent>
+
+        </MudTable>
+
+    </MudPaper>
+
+    <MudPaper Class="mt-1" Outlined="true" >
+        <MudToolBar>
+            <MudSwitch @bind-Checked="@dense" Color="Color.Primary">Dense</MudSwitch>
+            <MudSwitch @bind-Checked="@striped" Color="Color.Primary">Striped</MudSwitch>
+            <MudSwitch @bind-Checked="@bordered" Color="Color.Primary">Bordered</MudSwitch>
+        </MudToolBar>
+    </MudPaper>
+
+    <MudAlert Severity="Severity.Info" Class="mt-1" >This page is still under construction. You may use Swagger API Authorization endpoints and visualize the results here.</MudAlert>
+
+</MudContainer>

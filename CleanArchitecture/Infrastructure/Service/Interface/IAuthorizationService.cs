@@ -13,14 +13,14 @@ namespace Infrastructure.Service
         /// </summary>
         /// <param name="request">This is the required user email and role name</param>
         /// <returns>A result message</returns>
-        Task<IResult> AddUserToRoleAsync(AuthorizationRequest request);
+        Task<IResult> AddUserToRoleAsync(RoleUserRequest request);
 
         /// <summary>
         /// Create a new role on the system
         /// </summary>
-        /// <param name="roleName">This is the name of the Identity Role to create</param>
+        /// <param name="request">This is the name and description of the Identity Role to create</param>
         /// <returns>A result message</returns>
-        Task<IResult> CreateRoleAsync(string roleName);
+        Task<IResult> CreateRoleAsync(RoleRequest request);
 
         /// <summary>
         /// Get all roles
@@ -46,6 +46,6 @@ namespace Infrastructure.Service
         /// </summary>
         /// <param name="request">This is required user email and role name</param>
         /// <returns>A result message</returns>
-        Task<IResult> RemoveUserFromRoleAsync(AuthorizationRequest request);
+        Task<IResult> RemoveUserFromRoleAsync(RoleUserRequest request);
     }
 }

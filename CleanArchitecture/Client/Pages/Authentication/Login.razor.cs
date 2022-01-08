@@ -1,14 +1,14 @@
 ﻿using Core.Request.Identity;
 using MudBlazor;
 
-namespace Client.Pages.Auth
+namespace Client.Pages.Authentication
 {
-    public partial class Register
+    public partial class Login
     {
         /// <summary>
-        /// The registration view model
+        /// The login view model
         /// </summary>
-        public RegistrationRequest Model { get; set; } = new();
+        LoginRequest Model { get; set; } = new();
 
         bool _passwordVisibility;
         InputType _passwordInput = InputType.Password;
@@ -35,7 +35,7 @@ namespace Client.Pages.Auth
         }
 
         /// <summary>
-        /// Skips the registration process if authentication state is valid
+        /// Skips the login process if authentication state is valid
         /// </summary>
         protected override async Task OnInitializedAsync()
         {
@@ -50,7 +50,7 @@ namespace Client.Pages.Auth
         }
 
         /// <summary>
-        /// Processes a registration attempt when form validation passes
+        /// Processes a login attempt when form validation passes
         /// </summary>
         /// <returns></returns>
         private async Task SubmitAsync()
@@ -58,7 +58,7 @@ namespace Client.Pages.Auth
             _processing = true;
 
             // attempt login
-            var result = await _authenticationManager.RegisterAsync(Model);
+            var result = await _authenticationManager.LoginAsync(Model);
 
             if (result.Succeeded == false)
             {

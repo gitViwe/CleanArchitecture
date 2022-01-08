@@ -1,4 +1,5 @@
 ﻿using Core.Request.Identity;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Shared.Constant.Message;
 using Shared.Wrapper;
@@ -9,11 +10,11 @@ namespace Infrastructure.Service
     public class ClaimService : IClaimService
     {
         private readonly UserManager<AppIdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
 
         public ClaimService(
             UserManager<AppIdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<AppIdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;

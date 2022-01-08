@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
@@ -6,7 +7,7 @@ namespace Infrastructure
     /// <summary>
     /// The entity Framework Core context class inherits from <see cref="IdentityDbContext"/>
     /// </summary>
-    public class APIDbContext : IdentityDbContext<AppIdentityUser>
+    public class APIDbContext : IdentityDbContext<AppIdentityUser, AppIdentityRole, string>
     {
         /// <summary>
         /// Instantiate context using user specified provider

@@ -1,24 +1,18 @@
 ﻿@layout AuthLayout
-@page "/auth/register"
+@page "/authentication/login"
 
 <EditForm Model="Model" OnValidSubmit="SubmitAsync">
 
     <DataAnnotationsValidator />
-    
+
     <MudText Typo="Typo.h4"
              GutterBottom="true">
-        Sign Up
+        Sign In
     </MudText>
 
     <MudText>
-        Already have an account? <MudLink Href="/auth/login">Login</MudLink>
+        Don't have an account? <MudLink Href="/authentication/register">Register</MudLink>
     </MudText>
-
-    <MudTextField Label="User name"
-                  @bind-Value="Model.UserName"
-                  For="@(() => Model.UserName)"
-                  Variant="Variant.Outlined"
-                  Class="my-6" />
 
     <MudTextField Label="Email Address"
                   @bind-Value="Model.Email"
@@ -33,18 +27,14 @@
                   Variant="Variant.Outlined"
                   Adornment="Adornment.End"
                   AdornmentIcon="@_passwordInputIcon"
-                  OnAdornmentClick="TogglePasswordVisibility"
-                  Class="my-6" />
+                  OnAdornmentClick="TogglePasswordVisibility" />
 
-    <MudTextField InputType="@_passwordInput" 
-                  Label="Confirm Password"
-                  @bind-Value="Model.PasswordConfirmation"
-                  For="@(() => Model.PasswordConfirmation)"
-                  Variant="Variant.Outlined"
-                  Adornment="Adornment.End"
-                  AdornmentIcon="@_passwordInputIcon"
-                  OnAdornmentClick="TogglePasswordVisibility"
-                  Class="my-6" />
+    <div Class="d-flex justify-space-between align-center">
+        <MudCheckBox T="bool"
+                     Label="Remember me?"
+                     Color="Color.Primary"
+                     Class="ml-n1 my-3" />
+    </div>
 
     <MudButton ButtonType="ButtonType.Submit" 
                Variant="Variant.Filled"
@@ -60,8 +50,9 @@
         else
         {
             <MudText>
-                Sign Up
+                Sign In
             </MudText>
         }
     </MudButton>
 </EditForm>
+

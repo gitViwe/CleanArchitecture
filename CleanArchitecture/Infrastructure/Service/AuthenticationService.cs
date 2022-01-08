@@ -1,6 +1,7 @@
 ﻿using Core.Configuration;
 using Core.Request.Identity;
-using Core.Response;
+using Core.Response.Identity;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,14 +16,14 @@ namespace Infrastructure.Service
     public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<AppIdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
         private readonly TokenValidationParameters _validationParameters;
         private readonly APIDbContext _dbContext;
         private readonly AppConfiguration _jwtConfig;
 
         public AuthenticationService(
             UserManager<AppIdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<AppIdentityRole> roleManager,
             IOptionsMonitor<AppConfiguration> optionsMonitor,
             TokenValidationParameters validationParameters,
             APIDbContext dbContext)

@@ -47,20 +47,20 @@
                  Icon="@Icons.Material.Outlined.AccountBox"
                  HideExpandIcon="true">
 
-        <MudNavLink Href="/auth/register"
+        <MudNavLink Href="/authentication/register"
                     Icon="@Icons.Material.Outlined.Assignment">
             Register
         </MudNavLink>
 
-        <MudNavLink Href="/auth/login"
+        <MudNavLink Href="/authentication/login"
                     Icon="@Icons.Material.Outlined.LockOpen">
             Login
         </MudNavLink>
 
     </MudNavGroup>
 
-    <MudNavGroup Title="Accessing API data"
-                 Icon="@Icons.Material.Outlined.DataUsage"
+    <MudNavGroup Title="Authorization"
+                 Icon="@Icons.Material.Outlined.SupervisedUserCircle"
                  HideExpandIcon="true">
 
         <MudNavLink Href="/account"
@@ -68,10 +68,21 @@
             User details
         </MudNavLink>
 
+        <MudNavLink Href="/role"
+                    Icon="@Icons.Material.Outlined.SafetyDivider">
+            Manage Roles
+        </MudNavLink>
+
         <MudNavLink Href="#"
                     Icon="@Icons.Material.Outlined.AdminPanelSettings"
                     Disabled="true">
-            Manage permissions
+            Role permissions
+        </MudNavLink>
+
+        <MudNavLink Href="#"
+                    Icon="@Icons.Material.Outlined.ManageAccounts"
+                    Disabled="true">
+            Manage User Roles
         </MudNavLink>
 
     </MudNavGroup>

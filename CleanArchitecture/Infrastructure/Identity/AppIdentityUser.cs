@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure
+namespace Infrastructure.Identity
 {
     /// <summary>
     /// A custom implementation of the <see cref="IdentityUser"/>
