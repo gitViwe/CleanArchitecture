@@ -23,6 +23,9 @@ namespace Client.Pages.Identity
             await GetRolesAsync();
         }
 
+        /// <summary>
+        /// Make an API call to load all roles onto the table
+        /// </summary>
         private async Task GetRolesAsync()
         {
             _processing = true;

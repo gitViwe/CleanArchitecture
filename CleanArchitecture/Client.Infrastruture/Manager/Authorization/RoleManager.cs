@@ -1,4 +1,5 @@
 ﻿using Client.Infrastructure.Extensions;
+using Core.Request.Identity;
 using Core.Response.Identity;
 using Shared.Wrapper;
 using System.Net.Http.Json;
@@ -23,10 +24,10 @@ namespace Client.Infrastructure.Manager.Authorization
             return await response.ToResultAsync<IEnumerable<RoleResponse>>();
         }
 
-        public async Task<IResult> CreateAsync(string roleName)
+        public async Task<IResult> CreateAsync(RoleRequest request)
         {
             // make a get request to the API end point
-            var response = await _httpClient.PostAsJsonAsync(Route.AuthorizationEndpoints.CreateRole, roleName);
+            var response = await _httpClient.PostAsJsonAsync(Route.AuthorizationEndpoints.CreateRole, request);
 
             // process the response into a 'Result' object
             return await response.ToResultAsync();
