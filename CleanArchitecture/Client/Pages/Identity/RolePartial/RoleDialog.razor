@@ -1,0 +1,51 @@
+﻿
+<EditForm Model=Model OnValidSubmit="SubmitAsync">
+
+    <DataAnnotationsValidator />
+
+    <MudDialog>
+
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                Add Role
+            </MudText>
+        </TitleContent>
+
+        <DialogContent>
+            <MudTextField Label="Role name"
+                          @bind-Value="Model.Name"
+                          For="@(() => Model.Name)"
+                          Variant="Variant.Outlined"
+                          Class="my-6" />
+
+            <MudTextField Label="Role description"
+                          @bind-Value="Model.Description"
+                          For="@(() => Model.Description)"
+                          Variant="Variant.Outlined" />
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" 
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Medium"
+                       Disabled = "_processing"
+                       FullWidth="true"
+                       Class="mx-4 ">
+                @if(_processing)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">Processing</MudText>
+                }
+                else
+                {
+                    <MudText>
+                        Create Role
+                    </MudText>
+                }
+            </MudButton>
+        </DialogActions>
+
+    </MudDialog>
+
+</EditForm>

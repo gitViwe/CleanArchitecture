@@ -1,4 +1,5 @@
-﻿using Core.Response.Identity;
+﻿using Client.Pages.Identity.RolePartial;
+using Core.Response.Identity;
 using MudBlazor;
 
 namespace Client.Pages.Identity
@@ -44,6 +45,23 @@ namespace Client.Pages.Identity
                 }
             }
             _processing = false;
+        }
+
+        /// <summary>
+        /// Open role modal window
+        /// </summary>
+        private async Task ShowDialogAsync()
+        {
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+
+            // show the role dialog window
+            var dialogReference = _dialogService.Show<RoleDialog>("Create", options);
+
+            // wait for the user to finish
+            await dialogReference.Result;
+
+            // then refresh table
+            await GetRolesAsync();
         }
     }
 }
