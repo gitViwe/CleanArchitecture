@@ -1,4 +1,5 @@
-﻿using Core.Request.Identity;
+﻿using AutoMapper;
+using Core.Request.Identity;
 using Core.Response.Identity;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -12,32 +13,25 @@ namespace Infrastructure.Service
     {
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly RoleManager<AppIdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
         public AuthorizationService(
             UserManager<AppIdentityUser> userManager,
-            RoleManager<AppIdentityRole> roleManager)
+            RoleManager<AppIdentityRole> roleManager,
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
 
         public async Task<IResult> GetRolesAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
 
-            // TODO: Add auto mapper
-            var output = new List<RoleResponse>();
-            foreach (var item in roles)
-            {
-                output.Add(new RoleResponse()
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                });
-            }
-
-            return Result<IEnumerable<RoleResponse>>.Success(output);
+            var response = _mapper.Map<List<RoleResponse>>(roles);
+            
+            return Result<IEnumerable<RoleResponse>>.Success(response);
         }
 
         public async Task<IResult> CreateRoleAsync(RoleRequest request)
