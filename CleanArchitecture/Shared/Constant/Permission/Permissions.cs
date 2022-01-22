@@ -2,6 +2,9 @@
 
 namespace Shared.Constant.Permission
 {
+    /// <summary>
+    /// Defines the permission values used by the 'Permission' claims policy
+    /// </summary>
     public static class Permissions
     {
         [DisplayName("Forecast")]

@@ -2,7 +2,6 @@
 using Core.Response.Identity;
 using Infrastructure.Identity;
 using Infrastructure.Service;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Wrapper;
 using System.Net.Mime;
@@ -49,7 +48,7 @@ namespace WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                return Ok(await _authorizationService.CreateRoleAsync(request)); 
+                return Ok(await _authorizationService.CreateRoleAsync(request));
             }
 
             return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
@@ -111,6 +110,24 @@ namespace WebAPI.Controllers
             if (ModelState.IsValid)
             {
                 return Ok(await _authorizationService.RemoveUserFromRoleAsync(request));
+            }
+
+            return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));
+        }
+
+        /// <summary>
+        /// Use this endpoint to update a role on the system
+        /// </summary>
+        /// <param name="request">This is the name and description of the Identity Role to update</param>
+        /// <response code="200">Returns a success message</response>
+        [HttpPost]
+        [Route(nameof(UpdateRole))]
+        [ProducesResponseType(typeof(Result), 200)]
+        public async Task<IActionResult> UpdateRole([FromBody] RoleRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                return Ok(await _authorizationService.UpdateRoleAsync(request));
             }
 
             return Ok(Result.Fail(ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage).ToList()));

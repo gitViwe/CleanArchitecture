@@ -1,4 +1,5 @@
 ﻿using Client.Pages.Identity.RolePartial;
+using Core.Request.Identity;
 using Core.Response.Identity;
 using MudBlazor;
 
@@ -50,12 +51,40 @@ namespace Client.Pages.Identity
         /// <summary>
         /// Open role modal window
         /// </summary>
-        private async Task ShowDialogAsync()
+        private async Task ShowCreateDialogAsync()
         {
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
 
             // show the role dialog window
             var dialogReference = _dialogService.Show<RoleDialog>("Create", options);
+
+            // wait for the user to finish
+            await dialogReference.Result;
+
+            // then refresh table
+            await GetRolesAsync();
+        }
+
+        private async Task ShowEditDialogAsync(RoleResponse role)
+        {
+            // a container for the parameters to pass through to the dialog
+            var parameters = new DialogParameters();
+
+            var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+
+            // create the model to pass through to the dialog
+            var model = new RoleRequest()
+            {
+                ID = role.Id,
+                Name = role.Name,
+                Description = role.Description,
+            };
+
+            // add model as a parameter value
+            parameters.Add("Model", model);
+
+            // show the role dialog window
+            var dialogReference = _dialogService.Show<RoleDialog>("Edit", parameters, options);
 
             // wait for the user to finish
             await dialogReference.Result;

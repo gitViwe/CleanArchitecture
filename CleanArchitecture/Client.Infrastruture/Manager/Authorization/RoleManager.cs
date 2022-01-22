@@ -32,5 +32,14 @@ namespace Client.Infrastructure.Manager.Authorization
             // process the response into a 'Result' object
             return await response.ToResultAsync();
         }
+
+        public async Task<IResult> UpdateAsync(RoleRequest request)
+        {
+            // make a get request to the API end point
+            var response = await _httpClient.PostAsJsonAsync(Route.AuthorizationEndpoints.UpdateRole, request);
+
+            // process the response into a 'Result' object
+            return await response.ToResultAsync();
+        }
     }
 }

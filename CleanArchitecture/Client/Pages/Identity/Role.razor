@@ -17,7 +17,7 @@
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                Size="Size.Small"
-                               OnClick="ShowDialogAsync"
+                               OnClick="ShowCreateDialogAsync"
                                StartIcon="@Icons.Material.Filled.Add"
                                IconColor="Color.Surface">
                         Create
@@ -62,7 +62,7 @@
                              IconColor="Color.Secondary"
                              Direction="Direction.Left" OffsetX="true">
 
-                        <MudMenuItem Disabled="true">Edit</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => ShowEditDialogAsync(context))">Edit</MudMenuItem>
                         <MudMenuItem Disabled="true">Delete</MudMenuItem>
 
                     </MudMenu>

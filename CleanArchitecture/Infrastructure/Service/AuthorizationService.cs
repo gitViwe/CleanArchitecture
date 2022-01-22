@@ -146,5 +146,37 @@ namespace Infrastructure.Service
 
             return Result.Fail("Could not be remove user from the role. Please try again.");
         }
+
+        public async Task<IResult> UpdateRoleAsync(RoleRequest request)
+        {
+            // check if the role exists
+            var role = await _roleManager.FindByIdAsync(request.ID);
+
+            if (role is null)
+            {
+                return Result.Fail($"The role: {request.Name} does not exist.");
+            }
+
+            // check if the role name is in use
+            var existingRole = await _roleManager.FindByNameAsync(request.Name);
+
+            if (existingRole is not null && existingRole.Id != request.ID)
+            {
+                return Result.Fail($"The role name [{request.Name}] is already in use.");
+            }
+
+            // update the name and description
+            role.Name = request.Name;
+            role.Description = request.Description;
+
+            var result = await _roleManager.UpdateAsync(role);
+
+            if (result.Succeeded)
+            {
+                return Result.Success($"The role: {request.Name} has been updated.");
+            }
+
+            return Result.Fail(result.Errors.Select(item => item.Description).ToList());
+        }
     }
 }

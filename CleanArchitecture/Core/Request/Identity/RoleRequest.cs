@@ -7,6 +7,8 @@ namespace Core.Request.Identity
     /// </summary>
     public class RoleRequest
     {
+        public string ID { get; set; } = "";
+
         [Required,
             Display(Name = "Role Name")]
         public string Name { get; set; }
