@@ -23,6 +23,13 @@ namespace Infrastructure.Service
         Task<IResult> CreateRoleAsync(RoleRequest request);
 
         /// <summary>
+        /// Modify an existing role on the system
+        /// </summary>
+        /// <param name="request">This is the name and description of the Identity Role to create</param>
+        /// <returns>A result message</returns>
+        Task<IResult> UpdateRoleAsync(RoleRequest request);
+
+        /// <summary>
         /// Get all roles
         /// </summary>
         /// <returns>A list of the Identity roles</returns>

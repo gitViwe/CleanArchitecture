@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddWebAPISwagger(builder.Configuration);
 builder.Services.AddWebAPICors(builder.Configuration);
+builder.Services.AddWebAPIAutomapper();
 
 var app = builder.Build();
 

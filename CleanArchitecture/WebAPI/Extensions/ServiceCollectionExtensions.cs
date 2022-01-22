@@ -277,5 +277,15 @@ namespace WebAPI.Extensions
 
             return services;
         }
+
+        /// <summary>
+        /// Registers Automapper profiles in dependency injection
+        /// </summary>
+        internal static IServiceCollection AddWebAPIAutomapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(APIServiceCollectionExtensions).GetTypeInfo().Assembly);
+
+            return services;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core.Request.Identity;
+﻿using AutoMapper;
+using Core.Request.Identity;
 using Core.Response.Identity;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -12,32 +13,25 @@ namespace Infrastructure.Service
     {
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly RoleManager<AppIdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
         public AuthorizationService(
             UserManager<AppIdentityUser> userManager,
-            RoleManager<AppIdentityRole> roleManager)
+            RoleManager<AppIdentityRole> roleManager,
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
 
         public async Task<IResult> GetRolesAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
 
-            // TODO: Add auto mapper
-            var output = new List<RoleResponse>();
-            foreach (var item in roles)
-            {
-                output.Add(new RoleResponse()
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                });
-            }
-
-            return Result<IEnumerable<RoleResponse>>.Success(output);
+            var response = _mapper.Map<List<RoleResponse>>(roles);
+            
+            return Result<IEnumerable<RoleResponse>>.Success(response);
         }
 
         public async Task<IResult> CreateRoleAsync(RoleRequest request)
@@ -151,6 +145,38 @@ namespace Infrastructure.Service
             }
 
             return Result.Fail("Could not be remove user from the role. Please try again.");
+        }
+
+        public async Task<IResult> UpdateRoleAsync(RoleRequest request)
+        {
+            // check if the role exists
+            var role = await _roleManager.FindByIdAsync(request.ID);
+
+            if (role is null)
+            {
+                return Result.Fail($"The role: {request.Name} does not exist.");
+            }
+
+            // check if the role name is in use
+            var existingRole = await _roleManager.FindByNameAsync(request.Name);
+
+            if (existingRole is not null && existingRole.Id != request.ID)
+            {
+                return Result.Fail($"The role name [{request.Name}] is already in use.");
+            }
+
+            // update the name and description
+            role.Name = request.Name;
+            role.Description = request.Description;
+
+            var result = await _roleManager.UpdateAsync(role);
+
+            if (result.Succeeded)
+            {
+                return Result.Success($"The role: {request.Name} has been updated.");
+            }
+
+            return Result.Fail(result.Errors.Select(item => item.Description).ToList());
         }
     }
 }
