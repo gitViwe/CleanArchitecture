@@ -120,7 +120,7 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="request">This is the name and description of the Identity Role to update</param>
         /// <response code="200">Returns a success message</response>
-        [HttpPost]
+        [HttpPut]
         [Route(nameof(UpdateRole))]
         [ProducesResponseType(typeof(Result), 200)]
         public async Task<IActionResult> UpdateRole([FromBody] RoleRequest request)
