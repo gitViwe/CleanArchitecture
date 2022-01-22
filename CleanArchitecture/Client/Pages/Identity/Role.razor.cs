@@ -1,6 +1,8 @@
-﻿using Client.Pages.Identity.RolePartial;
+﻿using Client.Infrastructure.Manager.Authorization;
+using Client.Pages.Identity.RolePartial;
 using Core.Request.Identity;
 using Core.Response.Identity;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace Client.Pages.Identity
@@ -12,6 +14,7 @@ namespace Client.Pages.Identity
         private bool bordered = false;
         bool _processing;
         private IEnumerable<RoleResponse> _roles = new List<RoleResponse>();
+        [Inject] IRoleManager _roleManager { get; set; }
 
         public void Dispose()
         {
