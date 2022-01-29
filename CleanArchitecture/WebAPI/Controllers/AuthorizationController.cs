@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
         /// <response code="200">Returns a collection of all the users</response>
         [HttpGet]
         [Route(nameof(GetUsers))]
-        [ProducesResponseType(typeof(Result<List<AppIdentityUser>>), 200)]
+        [ProducesResponseType(typeof(Result<IEnumerable<UserResponse>>), 200)]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _authorizationService.GetUsersAsync());

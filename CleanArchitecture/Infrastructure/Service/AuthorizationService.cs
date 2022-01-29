@@ -58,7 +58,10 @@ namespace Infrastructure.Service
         public async Task<IResult> GetUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
-            return Result<List<AppIdentityUser>>.Success(users);
+
+            var response = _mapper.Map<List<UserResponse>>(users);
+
+            return Result<IEnumerable<UserResponse>>.Success(response);
         }
 
         public async Task<IResult> AddUserToRoleAsync(RoleUserRequest request)

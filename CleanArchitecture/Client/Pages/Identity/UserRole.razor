@@ -1,47 +1,49 @@
-﻿@page "/role"
+﻿@page "/user-role"
 @attribute [Authorize]
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-5">
 
-    <MudText Typo="Typo.h3" GutterBottom="true">Manage Roles</MudText>
-    <MudText Class="mb-8">This component demonstrates interfacing with the API to manage application roles.</MudText>
+    <MudText Typo="Typo.h3" GutterBottom="true">Manage User Roles</MudText>
+    <MudText Class="mb-8">This component demonstrates interfacing with the API to manage application user role assignment.</MudText>
 
     <MudPaper Outlined="true" >
-        <MudTable Items="_roles" Hover="true" Dense="dense" Striped="striped" Bordered="bordered" SortLabel="Sort By" Elevation="0" Loading="_processing">
+        <MudTable Items="_users" Hover="true" Dense="dense" Striped="striped" Bordered="bordered" SortLabel="Sort By" Elevation="0" Loading="_processing">
 
             <ToolBarContent>
                 <div class="justify-center mud-text-align-center">
 
                     <MudButton DisableElevation
                                Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               OnClick="ShowCreateDialogAsync"
-                               StartIcon="@Icons.Material.Filled.Add"
-                               IconColor="Color.Surface">
-                        Create
-                    </MudButton>
-                    <MudButton DisableElevation
-                               Variant="Variant.Filled"
                                Color="Color.Tertiary"
                                Size="Size.Small"
-                               OnClick="GetRolesAsync"
+                               OnClick="GetUsersAsync"
                                StartIcon="@Icons.Material.Filled.Refresh"
                                IconColor="Color.Surface">
                         Refresh
                     </MudButton>
+
                 </div>
             </ToolBarContent>
 
             <HeaderContent>
                 <MudTh>
-                    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<RoleResponse, object>(x => x.Name)">
-                        <MudText Typo="Typo.h6">Role Name</MudText>
+                    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UserResponse, object>(x => x.UserName)">
+                        <MudText Typo="Typo.h6">User Name</MudText>
                     </MudTableSortLabel>
                 </MudTh>
                 <MudTh>
-                    <MudTableSortLabel SortBy="new Func<RoleResponse, object>(x => x.Description)">
-                        <MudText Typo="Typo.h6">Description</MudText>
+                    <MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.Email)">
+                        <MudText Typo="Typo.h6">Email</MudText>
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh>
+                    <MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.FirstName)">
+                        <MudText Typo="Typo.h6">First Name</MudText>
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh>
+                    <MudTableSortLabel SortBy="new Func<UserResponse, object>(x => x.LastName)">
+                        <MudText Typo="Typo.h6">Last Name</MudText>
                     </MudTableSortLabel>
                 </MudTh>
                 <MudTh Style="text-align: center">
@@ -50,27 +52,23 @@
             </HeaderContent>
 
             <RowTemplate>
-                <MudTd DataLabel="Role Name">@context.Name</MudTd>
-                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="User Name">@context.UserName</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
                 <MudTd DataLabel="Actions" Style="text-align: center">
 
                     <MudButton DisableElevation
                                Variant="Variant.Outlined"
                                Color="Color.Secondary"
-                               Size="Size.Small"
-                               OnClick="@(() => ShowEditDialogAsync(context))">
-                        Edit
+                               Size="Size.Small">
+                        Manage Roles
                     </MudButton>
 
                 </MudTd>
             </RowTemplate>
 
-            <PagerContent>
-                <MudTablePager PageSizeOptions="new int[] { 5, 10, 20 }" />
-            </PagerContent>
-
         </MudTable>
-
     </MudPaper>
 
     <MudPaper Class="mt-1" Outlined="true" >
