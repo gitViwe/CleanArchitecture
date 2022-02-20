@@ -115,6 +115,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - WebAPI:
+    - [x] .NET 6 Upgrade
     - [x] .NET 5 Web API
     - [x] SwaggerUI
     - [x] JWT authentication
@@ -126,12 +127,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [ ] Account - Forgot Password
     - [ ] File Upload
 - Blazor Web Assembly:
+    - [x] .NET 6 Upgrade
     - [x] Progressive Web Aapplication
     - [x] MudBlazor UI
     - [x] Local Storage
     - [x] Authorization & Authentication
     - [x] User Account Management
-    - [ ] Role Management
+    - [x] Role Management
     - [ ] Role Permission Management
     - [ ] User Role Management
     - [ ] User Permission Management
