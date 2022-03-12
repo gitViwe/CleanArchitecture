@@ -51,6 +51,7 @@ namespace Client.Extensions
             services.AddTransient<IHttpInterceptorManager, HttpInterceptorManager>();
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IRoleManager, RoleManager>();
+            services.AddTransient<IUserManager, UserManager>();
 
             // add a named HTTP client and handler
             services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("PWA.Client").EnableIntercept(sp))

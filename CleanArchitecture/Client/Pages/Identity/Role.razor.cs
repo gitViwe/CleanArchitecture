@@ -12,9 +12,9 @@ namespace Client.Pages.Identity
         private bool dense = true;
         private bool striped = true;
         private bool bordered = false;
-        bool _processing;
+        private bool _processing;
         private IEnumerable<RoleResponse> _roles = new List<RoleResponse>();
-        [Inject] IRoleManager _roleManager { get; set; }
+        [Inject] IRoleManager RoleManager { get; set; }
 
         public void Dispose()
         {
@@ -35,7 +35,7 @@ namespace Client.Pages.Identity
         {
             _processing = true;
 
-            var result = await _roleManager.GetAllAsync();
+            var result = await RoleManager.GetAllAsync();
 
             if (result.Succeeded)
             {
