@@ -18,7 +18,7 @@ namespace Client.Infrastructure.Manager.Authorization
             // make a get request to the API end point
             var response = await _httpClient.GetAsync(Route.AuthorizationEndpoints.GetAllUsers);
 
-            // process the response into a collection of 'IdentityRole' objects
+            // process the response into a collection of 'IdentityUser' objects
             return await response.ToResultAsync<IEnumerable<UserResponse>>();
         }
 
